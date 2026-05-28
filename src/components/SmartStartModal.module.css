@@ -1,0 +1,197 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal {
+    background: #ffffff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+    text-align: center;
+}
+
+.welcome {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.sunIcon {
+    color: #f59e0b;
+    width: 28px;
+    height: 28px;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.9375rem;
+}
+
+.summarySection {
+    background: #f0fdf4;
+    border: 1px solid #dcfce7;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.summaryCard {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.summaryIcon {
+    background: #22c55e;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.summaryText {
+    font-size: 0.875rem;
+    color: #166534;
+}
+
+.pendingSection h3 {
+    margin: 0 0 1rem 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.taskList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.taskItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.taskInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.taskTitle {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.taskMeta {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.priorityBadge {
+    font-size: 0.625rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.priorityBadge.urgent { background: #fee2e2; color: #ef4444; }
+.priorityBadge.high { background: #ffedd5; color: #f97316; }
+.priorityBadge.normal { background: #f1f5f9; color: #64748b; }
+
+.moreTasks {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.aiInsight {
+    background: #f5f3ff;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.aiIcon {
+    color: #8b5cf6;
+    flex-shrink: 0;
+}
+
+.aiInsight p {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: #5b21b6;
+    line-height: 1.5;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.actions button {
+    flex: 1;
+    padding: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}

@@ -1,0 +1,312 @@
+.dashboardContainer {
+    padding: var(--sp-large);
+    background-color: var(--lk-bg-color);
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-large);
+    overflow-y: auto;
+    width: 100%;
+    flex: 1;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--lk-border-color);
+    padding-bottom: var(--sp-standard);
+}
+
+.titleArea h1 {
+    font-size: 1.75rem;
+    font-weight: var(--fw-semibold);
+    color: var(--lk-text-primary);
+    margin: 0 0 var(--sp-micro) 0;
+    letter-spacing: -0.02em;
+}
+
+.titleArea p {
+    font-size: var(--fs-subtitle);
+    color: var(--lk-text-secondary);
+    margin: 0;
+}
+
+.headerMetrics {
+    display: flex;
+    gap: var(--sp-standard);
+}
+
+.headerMetricCard {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-tight);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    padding: var(--sp-tight) var(--sp-standard);
+    border-radius: var(--btn-radius);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.headerMetricLabel {
+    display: block;
+    font-size: var(--fs-small);
+    color: var(--lk-text-secondary);
+}
+
+.headerMetricValue {
+    display: block;
+    font-size: var(--fs-subtitle);
+    font-weight: var(--fw-semibold);
+    color: var(--lk-text-primary);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--sp-standard);
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    padding: var(--sp-standard);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--sp-standard);
+}
+
+.cardHeader h3 {
+    font-size: var(--fs-subtitle);
+    font-weight: var(--fw-medium);
+    color: var(--lk-text-secondary);
+    margin: 0;
+}
+
+.kpiCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.kpiValue {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--lk-text-primary);
+    margin: var(--sp-micro) 0;
+    letter-spacing: -0.03em;
+}
+
+.kpiValue.healthy { color: #10b981; }
+.kpiValue.moderate { color: #f59e0b; }
+.kpiValue.critical { color: #ef4444; }
+
+.kpiSubtext {
+    font-size: var(--fs-small);
+    color: var(--lk-text-tertiary);
+}
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--sp-standard);
+}
+
+/* Bar Chart Styles */
+.barChartContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-tight);
+}
+
+.chartRow {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-standard);
+}
+
+.chartLabel {
+    width: 80px;
+    font-size: var(--fs-body);
+    color: var(--lk-text-secondary);
+}
+
+.chartBarWrapper {
+    flex: 1;
+    height: 8px;
+    background-color: #f3f4f6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.chartBar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease-out;
+}
+
+.chartBar.low { background-color: #9ca3af; }
+.chartBar.normal { background-color: #3b82f6; }
+.chartBar.high { background-color: #f59e0b; }
+.chartBar.urgent { background-color: #ef4444; }
+
+.chartValue {
+    width: 80px;
+    text-align: right;
+    font-size: var(--fs-body);
+    font-weight: var(--fw-medium);
+    color: var(--lk-text-primary);
+}
+
+/* Distribution List */
+.distributionList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-tight);
+}
+
+.distItem {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-standard);
+}
+
+.distLabel {
+    width: 100px;
+    font-size: var(--fs-body);
+    color: var(--lk-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.distBarWrapper {
+    flex: 1;
+    height: 8px;
+    background-color: #f3f4f6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.distBar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease-out;
+}
+
+.distValue {
+    width: 80px;
+    text-align: right;
+    font-size: var(--fs-body);
+    font-weight: var(--fw-medium);
+    color: var(--lk-text-primary);
+}
+
+/* Recommendations */
+.recList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-tight);
+}
+
+.recItem {
+    display: flex;
+    align-items: flex-start;
+    padding: var(--sp-tight);
+    background-color: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    border-radius: 4px;
+    font-size: var(--fs-body);
+    color: #92400e;
+}
+
+.emptyRecs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-large);
+    color: var(--lk-text-secondary);
+    gap: var(--sp-tight);
+}
+
+.emptyRecs p {
+    margin: 0;
+    font-size: var(--fs-body);
+}
+
+/* Tabs Navigation */
+.tabsBar {
+    display: flex;
+    gap: var(--sp-standard);
+    border-bottom: 1px solid var(--lk-border-color);
+    padding-bottom: var(--sp-tight);
+    margin-bottom: var(--sp-standard);
+}
+
+.tabBtn {
+    background: none;
+    border: none;
+    padding: var(--sp-tight) var(--sp-standard);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-medium);
+    color: var(--lk-text-secondary);
+    cursor: pointer;
+    border-radius: var(--btn-radius);
+    transition: all 0.2s ease;
+}
+
+.tabBtn:hover {
+    background-color: var(--blue-light-bg);
+    color: var(--blue-dark-navy);
+}
+
+.activeTab {
+    background-color: var(--blue-main);
+    color: white !important;
+}
+
+/* Table Styles */
+.tableContainer {
+    overflow-x: auto;
+    margin-top: var(--sp-standard);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: var(--fs-body);
+}
+
+.table th, .table td {
+    padding: var(--sp-tight) var(--sp-standard);
+    border-bottom: 1px solid var(--lk-border-color);
+}
+
+.table th {
+    font-weight: var(--fw-semibold);
+    color: var(--lk-text-secondary);
+    background-color: #f9fafb;
+}
+
+.table tr:hover {
+    background-color: #f3f4f6;
+}

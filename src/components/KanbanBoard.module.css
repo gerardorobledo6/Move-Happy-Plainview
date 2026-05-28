@@ -1,0 +1,42 @@
+.board {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 100%;
+    padding: var(--sp-tight);
+    padding-bottom: 2rem; /* More space for scrollbar */
+    gap: var(--sp-tight);
+    cursor: grab;
+    background-color: #f8fafc;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.board:active {
+    cursor: grabbing;
+}
+
+.dragging {
+    cursor: grabbing !important;
+    user-select: none;
+}
+
+/* Visible, modern horizontal scrollbar */
+.board::-webkit-scrollbar {
+    height: 12px;
+}
+
+.board::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.board::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+    border: 3px solid #f1f5f9;
+}
+
+.board::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}

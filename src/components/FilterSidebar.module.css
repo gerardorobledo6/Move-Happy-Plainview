@@ -1,0 +1,113 @@
+.sidebar {
+    width: 250px;
+    background-color: white;
+    border-right: 1px solid var(--lk-border-color);
+    padding: var(--sp-standard);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-section);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.collapsed {
+    width: 60px;
+    overflow: hidden;
+}
+
+.collapsed .section h3,
+.collapsed .checkbox,
+.collapsed .avatar,
+.collapsed .list {
+    display: none;
+}
+
+.searchWrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-tight);
+}
+
+.searchContainer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 0 0.5rem;
+    transition: all 0.2s;
+}
+
+.searchContainer:focus-within {
+    border-color: var(--blue-main);
+    background: white;
+    box-shadow: 0 0 0 2px rgba(1, 138, 190, 0.1);
+}
+
+.searchIcon {
+    color: var(--lk-text-tertiary);
+}
+
+.input {
+    flex: 1;
+    padding: 0.5rem 0.25rem;
+    background: transparent;
+    border: none;
+    font-size: var(--fs-body);
+    outline: none;
+}
+
+.collapsed .input {
+    display: none;
+}
+
+.filterBtn {
+    background: white;
+    border: 1px solid var(--lk-border-color);
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--lk-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+    box-shadow: var(--btn-shadow);
+}
+
+.filterBtn:hover {
+    background-color: var(--blue-light-bg);
+    color: var(--blue-main);
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-tight);
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-tight);
+    font-size: var(--fs-body);
+    color: var(--lk-text-primary);
+    cursor: pointer;
+}
+
+.checkbox input {
+    cursor: pointer;
+}
+
+.avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}

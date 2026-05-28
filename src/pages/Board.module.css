@@ -1,0 +1,19 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: var(--lk-bg-color);
+}
+
+.main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.boardContainer {
+    flex: 1;
+    overflow: hidden;
+    padding: 1rem;
+    background-color: var(--lk-bg-color);
+}

@@ -1,0 +1,118 @@
+.brainContainer {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.brainHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.brainIcon {
+    color: #8b5cf6;
+}
+
+.brainHeader h3 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.healthMeter {
+    margin-bottom: 1.25rem;
+}
+
+.healthLabel {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 0.35rem;
+}
+
+.progressBar {
+    height: 6px;
+    background: #f1f5f9;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    transition: width 0.5s ease;
+}
+
+.insightGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.insightItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #94a3b8;
+    transition: all 0.2s ease;
+}
+
+.insightContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.insightValue {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.insightLabel {
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.activeRisk { background: #fef2f2; color: #ef4444; }
+.activeRisk .insightValue { color: #b91c1c; }
+
+.activeBlocked { background: #fff7ed; color: #f97316; }
+.activeBlocked .insightValue { color: #c2410c; }
+
+.activeStagnant { background: #eff6ff; color: #3b82f6; }
+.activeStagnant .insightValue { color: #1d4ed8; }
+
+.aiRecommendation {
+    background: #f5f3ff;
+    border-left: 3px solid #8b5cf6;
+    padding: 0.75rem;
+    border-radius: 0 6px 6px 0;
+}
+
+.aiTag {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: #8b5cf6;
+    margin-bottom: 0.25rem;
+}
+
+.aiRecommendation p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #5b21b6;
+    line-height: 1.4;
+}

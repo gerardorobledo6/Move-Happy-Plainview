@@ -1,0 +1,176 @@
+:root {
+  --lk-bg-color: #D6E8EE;
+  --lk-header-bg: #001B48;
+  
+  /* Text Colors (Linear Inspired) */
+  --lk-text-primary: #1F2937;
+  --lk-text-secondary: #6B7280;
+  --lk-text-tertiary: #9CA3AF;
+  --lk-text-muted: #6B7280;
+  
+  --lk-lane-bg: #ebecf0;
+  --lk-card-bg: #ffffff;
+  --lk-border-color: #dfe1e6;
+  --lk-primary-color: #018ABE;
+  --lk-lane-width: 280px;
+  --lk-font-family: 'Inter', 'Inter var', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Typography Scale (Strict) */
+  --fs-large: 1.25rem;    /* 20px */
+  --fs-medium: 1rem;      /* 16px */
+  --fs-subtitle: 0.875rem; /* 14px */
+  --fs-body: 0.8125rem;   /* 13px */
+  --fs-small: 0.75rem;    /* 12px */
+  
+  /* Font Weights */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  
+  /* Spacing System (8pt Grid) */
+  --sp-micro: 4px;
+  --sp-tight: 8px;
+  --sp-compact: 12px;
+  --sp-standard: 16px;
+  --sp-section: 24px;
+  --sp-large: 32px;
+
+  /* Line Heights */
+  --lh-tight: 1.25;
+  --lh-base: 1.5;
+
+  /* Premium Blue Palette */
+  --blue-dark-navy: #001B48;
+  --blue-deep: #02457A;
+  --blue-main: #018ABE;
+  --blue-soft: #97CADB;
+  --blue-light-bg: #D6E8EE;
+
+  /* Button Defaults */
+  --btn-radius: 8px; /* Slightly tighter radius for Linear look */
+  --btn-shadow: 0 4px 6px -1px rgba(0, 27, 72, 0.1), 0 2px 4px -1px rgba(0, 27, 72, 0.06);
+  --btn-shadow-hover: 0 10px 15px -3px rgba(0, 27, 72, 0.15), 0 4px 6px -2px rgba(0, 27, 72, 0.1);
+  --btn-shadow-active: 0 2px 4px -1px rgba(0, 27, 72, 0.1);
+}
+
+/* Premium Button System */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem; /* Multiples of 4/8 */
+  border-radius: var(--btn-radius);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--btn-shadow);
+  user-select: none;
+  font-family: inherit;
+  font-size: var(--fs-body);
+  letter-spacing: -0.01em;
+  outline: none;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--btn-shadow-hover);
+}
+
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: var(--btn-shadow-active);
+}
+
+.btn-primary {
+  background-color: var(--blue-main);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--blue-deep);
+}
+
+.btn-primary:active {
+  background-color: var(--blue-dark-navy);
+}
+
+.btn-secondary {
+  background-color: var(--blue-soft);
+  color: var(--blue-dark-navy);
+}
+
+.btn-secondary:hover {
+  background-color: #86b9cb; /* Slightly darker soft blue */
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--blue-main);
+  color: var(--blue-main);
+  box-shadow: none;
+}
+
+.btn-outline:hover {
+  background-color: var(--blue-light-bg);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--lk-font-family);
+  background-color: var(--lk-bg-color);
+  color: var(--lk-text-primary);
+  letter-spacing: normal;
+  line-height: var(--lh-base);
+  font-size: var(--fs-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c7d0;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a5adba;
+}
+
+/* Utilities */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.p-2 { padding: 0.5rem; }
+.p-4 { padding: 1rem; }
+.m-2 { margin: 0.5rem; }
+.font-bold { font-weight: bold; }
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.text-gray-500 { color: #6b778c; }
+.cursor-pointer { cursor: pointer; }

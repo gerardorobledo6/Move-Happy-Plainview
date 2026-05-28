@@ -1,0 +1,130 @@
+.topbar {
+    height: 56px; /* 8 * 7 */
+    background-color: #001B48;
+    border-bottom: 1px solid #02457A;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--sp-section);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-standard);
+}
+
+.logo {
+    font-size: var(--fs-medium);
+    font-weight: var(--fw-semibold);
+    color: white;
+    letter-spacing: -0.01em;
+}
+
+.actionBtn {
+    height: 34px !important;
+    padding: 0 12px !important;
+    min-width: 105px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: var(--btn-radius) !important;
+    gap: 6px !important;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-tight);
+}
+
+.userProfileBtn {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-tight);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    color: #97CADB;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-medium);
+    transition: background-color 0.2s, transform 0.1s ease;
+    pointer-events: auto;
+}
+
+.userProfileBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.userProfileBtn:active .avatar {
+    transform: scale(0.95);
+}
+
+.profileWrapper {
+    position: relative;
+    z-index: 100;
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    width: 250px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.dropdownHeader {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.dropdownList {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.dropdownEmpty {
+    padding: 1.5rem 1rem;
+    text-align: left;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.avatar {
+    width: 24px; /* 8 * 3 */
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    font-weight: var(--fw-semibold);
+    transition: transform 0.1s ease;
+}
+
+.menuBtn {
+    background: none;
+    border: none;
+    font-size: 1.125rem;
+    cursor: pointer;
+    color: #97CADB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-micro);
+}
