@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -22,6 +22,8 @@ model User {
 
   assignedCards Card[]    @relation("AssignedCards")
   comments      Comment[]
+
+notifications Notification[] @relation("UserNotifications")
 }
 
 model Lane {
