@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://leankit-api.onrender.com/api',
 });
 
 client.interceptors.request.use((config) => {
