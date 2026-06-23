@@ -147,6 +147,7 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
     return (
         <div className={styles.overlay}>
             <div className={styles.modal}>
+                <h1 style={{ color: 'red', fontSize: '2em', textAlign: 'center', margin: 0, padding: '10px' }}>TEST ANTIGRAVITY 123456</h1>
                 <div className={styles.header}>
                     <span>{card.headerId}</span>
                     <button onClick={onClose} className={styles.closeBtn}>

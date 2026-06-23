@@ -4,7 +4,7 @@ import client from '../api/client';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 import { normalizeEmail } from '../utils/authUtils';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/logo-mh.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -76,6 +76,7 @@ const Login = () => {
           <div className={styles.aiHeader}>
             <img src={logoImg} alt="Move Happy Logo" className={styles.aiLogoImage} />
             <h2>Move Happy OS</h2>
+            <div>ANTIGRAVITY_TEST_2026</div>
             <div className={styles.aiStatusBadge}>
               <span className={styles.aiStatusDot}></span>
               System Online

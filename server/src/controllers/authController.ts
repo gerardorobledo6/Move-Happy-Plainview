@@ -27,14 +27,15 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
         const passwordHash = await bcrypt.hash(password, 10);
 
-        const user = await prisma.user.create({
-            data: {
-                email,
-                passwordHash,
-                name,
-                avatarColor: '#' + Math.floor(Math.random() * 16777215).toString(16)
-            },
-        });
+        const user = await prisma.user.findUnique({ where: { email } });
+
+console.log("LOGIN EMAIL:", email);
+console.log("USER FOUND:", user);
+
+if (!user) {
+    res.status(400).json({ error: 'Invalid credentials' });
+    return;
+}
 
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
 
