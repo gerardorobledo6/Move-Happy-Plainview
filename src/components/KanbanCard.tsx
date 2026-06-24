@@ -37,12 +37,13 @@ const KanbanCard: React.FC<Props> = ({ card, isOverlay, onClick }) => {
 
     return (
         <div
+            id={`card-${card.id}`}
             ref={setNodeRef}
             style={style}
             {...listeners}
             {...attributes}
             data-kanban-card="true"
-            className={`${styles.card} ${isOverlay ? styles.overlay : ''} ${isDragging ? styles.dragging : ''}`}
+            className={`${styles.card} ${isOverlay ? styles.overlay : ''} ${isDragging ? styles.dragging : ''} ${card.status === 'Blocked' ? styles.blocked : ''}`}
             onClick={() => onClick?.(card)}
         >
             <div className={styles.priorityBar} style={{ backgroundColor: priorityColor }} />

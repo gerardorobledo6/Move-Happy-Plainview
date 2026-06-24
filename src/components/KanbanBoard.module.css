@@ -1,7 +1,7 @@
 .board {
     display: flex;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
     height: 100%;
     padding: var(--sp-tight);
     padding-bottom: 2rem; /* More space for scrollbar */

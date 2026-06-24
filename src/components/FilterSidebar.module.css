@@ -111,3 +111,51 @@
     justify-content: center;
     font-size: 10px;
 }
+
+.filterCard {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.filterCard:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    border-color: #cbd5e1;
+}
+
+.filterHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.filterTitle {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filterPreview {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filterContent {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+}

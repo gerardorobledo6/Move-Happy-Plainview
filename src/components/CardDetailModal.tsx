@@ -106,7 +106,7 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
         }
     };
 
-    const handleCreateTask = () => {
+    const handleCreateTask = async () => {
         if (!newTaskName.trim()) return;
 
         let tasks: any[] = [];
@@ -138,6 +138,18 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
             localStorage.setItem("tasks", JSON.stringify(tasks));
         } catch (e) {
             console.error("Failed to save tasks to localStorage", e);
+        }
+
+        if (assigneeId) {
+            try {
+                await client.post('/notifications', {
+                    userId: assigneeId,
+                    cardId: card.id,
+                    cardTitle: 'New Task'
+                });
+            } catch (error) {
+                console.error("Failed to create task notification:", error);
+            }
         }
 
         setNewTaskName('');

@@ -13,6 +13,8 @@ interface Props {
         search: string;
         userIds: string[];
         priorities: string[];
+        plannedStart?: string;
+        plannedFinish?: string;
     };
     onCardClick?: (card: Card) => void;
     lanes: Lane[];
@@ -250,6 +252,12 @@ const KanbanBoard: React.FC<Props> = ({ filters, onCardClick, lanes, setLanes })
             }
             if (filters?.priorities && filters.priorities.length > 0) {
                 if (!filters.priorities.includes(card.priority)) return false;
+            }
+            if (filters?.plannedStart) {
+                if (!card.plannedStart || !card.plannedStart.startsWith(filters.plannedStart)) return false;
+            }
+            if (filters?.plannedFinish) {
+                if (!card.plannedFinish || !card.plannedFinish.startsWith(filters.plannedFinish)) return false;
             }
             return true;
         })

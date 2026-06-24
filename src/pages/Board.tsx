@@ -32,6 +32,8 @@ const Board = () => {
     search: '',
     userIds: [] as string[],
     priorities: [] as string[],
+    plannedStart: '',
+    plannedFinish: '',
   });
 
   const [users, setUsers] = useState<User[]>([]);
@@ -91,6 +93,47 @@ const Board = () => {
     } else {
       // Fallback to full refresh
       fetchLanes();
+    }
+  };
+
+  const handleOpenCardFromId = (cardId: string) => {
+    // Search all lanes
+    let foundCard = null;
+    for (const lane of lanes) {
+      const card = lane.cards.find(c => c.id === cardId);
+      if (card) {
+        foundCard = card;
+        break;
+      }
+    }
+
+    if (foundCard) {
+      // Navigate to board dashboard if not already there
+      setView('dashboard');
+      
+      // Select it to open the modal
+      setSelectedCard(foundCard);
+
+      // Scroll to it on the board
+      setTimeout(() => {
+        const el = document.getElementById(`card-${cardId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Optional: Add a temporary pulse or outline
+          const originalOutline = el.style.outline;
+          const originalTransition = el.style.transition;
+          el.style.transition = 'outline 0.3s ease';
+          el.style.outline = '3px solid #3b82f6';
+          setTimeout(() => {
+            el.style.outline = originalOutline;
+            setTimeout(() => { el.style.transition = originalTransition; }, 300);
+          }, 2000);
+        }
+      }, 100);
+
+    } else {
+      alert("Card not found. It may have been deleted.");
     }
   };
 
@@ -168,6 +211,7 @@ const Board = () => {
         onShowDashboard={() => setView('exec-dashboard')}
         onShowPlanner={() => setView('planner')}
         onShowFollowUps={() => setView('followUps')}
+        onOpenCard={handleOpenCardFromId}
         lanes={lanes}
       />
 

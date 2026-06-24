@@ -24,6 +24,44 @@ export const getNotifications = async (req: Request, res: Response): Promise<voi
     }
 };
 
+export const createNotification = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const creatorId = (req as any).userId as string;
+        const { userId, cardId, cardTitle } = req.body;
+
+        if (!userId || !cardId || !cardTitle) {
+            res.status(400).json({ error: 'Missing required fields' });
+            return;
+        }
+
+        // Prevent self-notification
+        if (creatorId === userId) {
+            res.json({ message: 'Self-notification skipped' });
+            return;
+        }
+
+        let senderName = 'System';
+        if (creatorId) {
+            const sender = await prisma.user.findUnique({ where: { id: creatorId } });
+            if (sender) senderName = sender.name;
+        }
+
+        const notification = await prisma.notification.create({
+            data: {
+                userId,
+                senderName,
+                cardId,
+                cardTitle
+            }
+        });
+
+        res.status(201).json(notification);
+    } catch (error) {
+        console.error("Error creating notification:", error);
+        res.status(500).json({ error: 'Failed to create notification' });
+    }
+};
+
 export const markAsRead = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id as string;
     try {

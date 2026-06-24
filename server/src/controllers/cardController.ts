@@ -103,6 +103,7 @@ export const updateCard = async (req: Request, res: Response): Promise<void> => 
         });
 
         // Create notifications for newly assigned users
+        console.log("NOTIFICATION TRIGGER REACHED", { newAssignees, assignedUserIds });
         if (newAssignees.length > 0) {
             const senderId = (req as any).userId;
             let senderName = 'System';

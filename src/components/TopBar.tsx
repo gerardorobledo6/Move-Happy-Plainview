@@ -16,6 +16,7 @@ interface TopBarProps {
     onShowPlanner?: () => void;
     onShowDashboard?: () => void;
     onShowFollowUps?: () => void;
+    onOpenCard?: (cardId: string) => void;
     lanes: Lane[];
 }
 
@@ -27,6 +28,7 @@ const TopBar: React.FC<TopBarProps> = ({
     onShowPlanner,
     onShowDashboard,
     onShowFollowUps,
+    onOpenCard,
     lanes
 }) => {
     const { user, logout, isAdmin } = useAuth();
@@ -131,10 +133,20 @@ const TopBar: React.FC<TopBarProps> = ({
                                         <div 
                                             key={n.id} 
                                             className={`${styles.notificationItem} ${!n.read ? styles.unread : ''}`}
-                                            onClick={() => markAsRead(n.id)}
+                                            onClick={() => {
+                                                markAsRead(n.id);
+                                                if (n.cardTitle === 'New Task') {
+                                                    if (onShowTasks) onShowTasks();
+                                                } else {
+                                                    if (onOpenCard) onOpenCard(n.cardId);
+                                                }
+                                                setIsDropdownOpen(false);
+                                            }}
                                         >
                                             <div className={styles.notifMessage}>
-                                                {n.message || `You were assigned to: ${n.cardTitle}`}
+                                                {n.cardTitle === 'New Task'
+                                                    ? `New task assigned by ${n.senderName}`
+                                                    : `You were assigned to: ${n.cardTitle}`}
                                             </div>
                                             <div className={styles.notifTime}>
                                                 {new Date(n.createdAt).toLocaleDateString()}
