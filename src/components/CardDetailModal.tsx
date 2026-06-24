@@ -56,6 +56,8 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
 
     // New Task Modal state
     const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
+
+
     const [newTaskName, setNewTaskName] = useState('');
     const [newTaskAssignee, setNewTaskAssignee] = useState('');
     const [newTaskPriority, setNewTaskPriority] = useState('Normal');
@@ -144,10 +146,41 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
         setIsNewTaskModalOpen(false);
     };
 
+    // Keep refs fresh for global keyboard listener to avoid stale closures
+    const stateRef = useRef({ isNewTaskModalOpen, loading, handleSaveDetails });
+    useEffect(() => {
+        stateRef.current = { isNewTaskModalOpen, loading, handleSaveDetails };
+    });
+
+    // Global keyboard listener for Escape and Enter
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            } else if (e.key === 'Enter') {
+                const { isNewTaskModalOpen, loading, handleSaveDetails } = stateRef.current;
+                
+                // Do not trigger main save if sub-modal is open
+                if (isNewTaskModalOpen) return;
+                
+                // Do not trigger if typing in a textarea
+                if (e.target instanceof HTMLTextAreaElement) {
+                    return;
+                }
+                
+                e.preventDefault();
+                if (!loading) {
+                    handleSaveDetails();
+                }
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
+
     return (
         <div className={styles.overlay}>
             <div className={styles.modal}>
-                <h1 style={{ color: 'red', fontSize: '2em', textAlign: 'center', margin: 0, padding: '10px' }}>TEST ANTIGRAVITY 123456</h1>
                 <div className={styles.header}>
                     <span>{card.headerId}</span>
                     <button onClick={onClose} className={styles.closeBtn}>

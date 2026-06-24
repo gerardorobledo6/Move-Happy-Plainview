@@ -5,18 +5,22 @@ import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute'; // Placeholder for now
 import Board from './pages/Board'; // Placeholder
 
+import { NotificationProvider } from './context/NotificationContext';
+
 function App() {
     return (
         <BrowserRouter>
             <AuthProvider>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/" element={
-                        <ProtectedRoute>
-                            <Board />
-                        </ProtectedRoute>
-                    } />
-                </Routes>
+                <NotificationProvider>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/" element={
+                            <ProtectedRoute>
+                                <Board />
+                            </ProtectedRoute>
+                        } />
+                    </Routes>
+                </NotificationProvider>
             </AuthProvider>
         </BrowserRouter>
     );

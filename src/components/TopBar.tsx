@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { APP_NAME } from '../constants';
 import styles from './TopBar.module.css';
 import { Plus, UserPlus, FileSpreadsheet, LayoutDashboard, Sparkles, Bell, Users, ListFilter } from 'lucide-react';
+import { useNotifications } from '../context/NotificationContext';
 
 import { Lane } from '../types';
 import ProductivityScore from './ProductivityScore';
@@ -29,6 +30,7 @@ const TopBar: React.FC<TopBarProps> = ({
     lanes
 }) => {
     const { user, logout, isAdmin } = useAuth();
+    const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
     const allCards = React.useMemo(() => 
         lanes.flatMap(lane => lane.cards), 
@@ -99,21 +101,47 @@ const TopBar: React.FC<TopBarProps> = ({
                             className={styles.avatar} 
                             style={{ 
                                 backgroundColor: user?.avatarColor || '#3b82f6',
-                                transform: isDropdownOpen ? 'scale(0.95)' : 'scale(1)'
+                                transform: isDropdownOpen ? 'scale(0.95)' : 'scale(1)',
+                                position: 'relative'
                             }}
                         >
                             {user?.name?.charAt(0) || 'U'}
+                            {unreadCount > 0 && (
+                                <div className={styles.badge}>{unreadCount > 9 ? '9+' : unreadCount}</div>
+                            )}
                         </div>
                         <span>{user?.name}</span>
                     </button>
 
                     {isDropdownOpen && (
                         <div className={styles.dropdown} onClick={(e) => e.stopPropagation()}>
-                            <div className={styles.dropdownHeader}>Notifications</div>
+                            <div className={styles.dropdownHeader}>
+                                Notifications
+                                {unreadCount > 0 && (
+                                    <button onClick={markAllAsRead} className={styles.markAllBtn}>Mark all read</button>
+                                )}
+                            </div>
                             <div className={styles.dropdownList}>
-                                <div className={styles.dropdownEmpty}>
-                                    • No notifications
-                                </div>
+                                {notifications.length === 0 ? (
+                                    <div className={styles.dropdownEmpty}>
+                                        • No notifications
+                                    </div>
+                                ) : (
+                                    notifications.map(n => (
+                                        <div 
+                                            key={n.id} 
+                                            className={`${styles.notificationItem} ${!n.read ? styles.unread : ''}`}
+                                            onClick={() => markAsRead(n.id)}
+                                        >
+                                            <div className={styles.notifMessage}>
+                                                {n.message || `You were assigned to: ${n.cardTitle}`}
+                                            </div>
+                                            <div className={styles.notifTime}>
+                                                {new Date(n.createdAt).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     )}

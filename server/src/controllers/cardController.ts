@@ -78,7 +78,15 @@ export const updateCard = async (req: Request, res: Response): Promise<void> => 
             data.pickupDate = pickupDate ? new Date(pickupDate) : null;
         }
 
+        let newAssignees: string[] = [];
         if (assignedUserIds !== undefined) {
+            const existingCard = await prisma.card.findUnique({
+                where: { id },
+                include: { assignedUsers: true }
+            });
+            const existingIds = existingCard?.assignedUsers.map(u => u.id) || [];
+            newAssignees = assignedUserIds.filter(id => !existingIds.includes(id));
+
             data.assignedUsers = {
                 set: assignedUserIds.map((uid: string) => ({ id: uid }))
             };
@@ -93,6 +101,31 @@ export const updateCard = async (req: Request, res: Response): Promise<void> => 
                 comments: { include: { user: true } }
             }
         });
+
+        // Create notifications for newly assigned users
+        if (newAssignees.length > 0) {
+            const senderId = (req as any).userId;
+            let senderName = 'System';
+            if (senderId) {
+                const sender = await prisma.user.findUnique({ where: { id: senderId } });
+                if (sender) senderName = sender.name;
+            }
+
+            for (const userId of newAssignees) {
+                // Prevent self-notification
+                if (userId === senderId) continue;
+
+                await prisma.notification.create({
+                    data: {
+                        userId,
+                        senderName,
+                        cardId: card.id,
+                        cardTitle: card.title,
+                    }
+                }).catch(e => console.error("Failed to create notification:", e));
+            }
+        }
+
 
 
         
@@ -122,7 +155,7 @@ export const addComment = async (req: Request, res: Response): Promise<void> => 
     // ...
 
    try {
-    const userId = (req as any).user?.id as string;
+    const userId = (req as any).userId as string;
 
     const comment = await prisma.comment.create({
         data: {

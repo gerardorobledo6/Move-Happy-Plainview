@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes';
 import laneRoutes from './routes/laneRoutes';
 import cardRoutes from './routes/cardRoutes';
 import userRoutes from './routes/userRoutes';
+import notificationRoutes from './routes/notificationRoutes';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/cards', cardRoutes);
 app.use('/api/lanes', laneRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
