@@ -76,7 +76,6 @@ const Login = () => {
           <div className={styles.aiHeader}>
             <img src={logoImg} alt="Move Happy Logo" className={styles.aiLogoImage} />
             <h2>Move Happy OS</h2>
-            <div>ANTIGRAVITY_TEST_2026</div>
             <div className={styles.aiStatusBadge}>
               <span className={styles.aiStatusDot}></span>
               System Online
