@@ -37,11 +37,82 @@ const Board = () => {
   });
 
   const [users, setUsers] = useState<User[]>([]);
+const [restoredForUser, setRestoredForUser] = useState<string | null>(null);
+
 
   useEffect(() => {
     fetchUsers();
     fetchLanes();
   }, []);
+
+// Restore the user's board state after a page refresh
+useEffect(() => {
+    if (!user?.id) return;
+
+    const storageKey = `plainview_board_state_v1_${user.id}`;
+
+    try {
+        const savedState = sessionStorage.getItem(storageKey);
+
+        if (savedState) {
+            const parsed = JSON.parse(savedState);
+
+            if (parsed.filters && typeof parsed.filters === 'object') {
+                setFilters(prev => ({
+                    ...prev,
+                    ...parsed.filters,
+                    userIds: Array.isArray(parsed.filters.userIds)
+                        ? parsed.filters.userIds
+                        : [],
+                    priorities: Array.isArray(parsed.filters.priorities)
+                        ? parsed.filters.priorities
+                        : [],
+                }));
+            }
+
+            const validViews = [
+                'dashboard',
+                'tasks',
+                'exec-dashboard',
+                'planner',
+                'followUps'
+            ];
+
+            if (
+                validViews.includes(parsed.view) &&
+                (parsed.view !== 'exec-dashboard' || isAdmin)
+            ) {
+                setView(parsed.view);
+            }
+
+            if (typeof parsed.showSidebar === 'boolean') {
+                setShowSidebar(parsed.showSidebar);
+            }
+        }
+    } catch (error) {
+        console.error('Failed to restore board state:', error);
+    }
+
+    setRestoredForUser(user.id);
+}, [user?.id, isAdmin]);
+
+// Save the user's board state whenever filters or view settings change
+useEffect(() => {
+    if (!user?.id || restoredForUser !== user.id) return;
+
+    const storageKey = `plainview_board_state_v1_${user.id}`;
+
+    try {
+        sessionStorage.setItem(storageKey, JSON.stringify({
+            filters,
+            view,
+            showSidebar
+        }));
+    } catch (error) {
+        console.error('Failed to save board state:', error);
+    }
+}, [filters, view, showSidebar, user?.id, restoredForUser]);
+
 
   useEffect(() => {
     if (user && lanes.length > 0) {
