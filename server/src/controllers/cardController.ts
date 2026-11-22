@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const createCard = async (req: Request, res: Response): Promise<void> => {
-    const { title, laneId, description, orderNumber, priority, status, plannedStart, plannedFinish, pickupDate, tags } = req.body;
+    const { title, laneId, description, orderNumber, priority, status, plannedStart, plannedFinish, pickupDate, loadingStart, loadingFinish, tags } = req.body;
     const assignedUserIds = req.body.assignedUserIds as string[] | undefined;
     try {
         // Generate a simple headerId if not provided (e.g. valid approach for MVP)
@@ -22,6 +22,8 @@ export const createCard = async (req: Request, res: Response): Promise<void> => 
                 plannedStart: plannedStart ? new Date(plannedStart) : null,
                 plannedFinish: plannedFinish ? new Date(plannedFinish) : null,
                 pickupDate: pickupDate ? new Date(pickupDate) : null,
+                loadingStart: loadingStart ? new Date(loadingStart) : null,
+                loadingFinish: loadingFinish ? new Date(loadingFinish) : null,
                 orderNumber,
                 assignedUsers: assignedUserIds ? {
                     connect: assignedUserIds.map((id: string) => ({ id }))
@@ -45,7 +47,7 @@ export const createCard = async (req: Request, res: Response): Promise<void> => 
 
 export const updateCard = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id as string;
-    const { title, laneId, description, orderNumber, priority, status, plannedStart, plannedFinish, pickupDate } = req.body;
+    const { title, laneId, description, orderNumber, priority, status, plannedStart, plannedFinish, pickupDate, loadingStart, loadingFinish } = req.body;
     const assignedUserIds = req.body.assignedUserIds as string[] | undefined;
 
     try {
@@ -76,6 +78,12 @@ export const updateCard = async (req: Request, res: Response): Promise<void> => 
         }
         if (pickupDate !== undefined) {
             data.pickupDate = pickupDate ? new Date(pickupDate) : null;
+        }
+        if (loadingStart !== undefined) {
+            data.loadingStart = loadingStart ? new Date(loadingStart) : null;
+        }
+        if (loadingFinish !== undefined) {
+            data.loadingFinish = loadingFinish ? new Date(loadingFinish) : null;
         }
 
         let newAssignees: string[] = [];

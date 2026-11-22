@@ -49,6 +49,8 @@ model Card {
   
   orderNumber   String?
   pickupDate    DateTime?
+  loadingStart  DateTime? // Loading Confirmation - START
+  loadingFinish DateTime? // Loading Confirmation - FINISH
   laneId        String
   lane          Lane      @relation(fields: [laneId], references: [id])
   

@@ -44,6 +44,8 @@ export interface Card {
     externalLink?: string;
     orderNumber?: string;
     pickupDate?: string;
+    loadingStart?: string | null;
+    loadingFinish?: string | null;
     resolvedAt?: string;
     createdAt?: string;
     updatedAt?: string;

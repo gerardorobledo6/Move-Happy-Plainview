@@ -18,6 +18,12 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
     const [pickupDate, setPickupDate] = useState(
         card.pickupDate ? new Date(card.pickupDate).toISOString().split('T')[0] : ''
     );
+    const [loadingStart, setLoadingStart] = useState(
+        card.loadingStart ? new Date(card.loadingStart).toISOString().split('T')[0] : ''
+    );
+    const [loadingFinish, setLoadingFinish] = useState(
+        card.loadingFinish ? new Date(card.loadingFinish).toISOString().split('T')[0] : ''
+    );
     const [plannedStart, setPlannedStart] = useState(
         card.plannedStart ? new Date(card.plannedStart).toISOString().split('T')[0] : ''
     );
@@ -76,6 +82,8 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
                 plannedStart: plannedStart || null,
                 plannedFinish: plannedFinish || null,
                 pickupDate: pickupDate || null,
+                loadingStart: loadingStart || null,
+                loadingFinish: loadingFinish || null,
                 assignedUserIds: assignedUserId ? [assignedUserId] : [],
             };
 
@@ -223,6 +231,36 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
                                         onChange={e => setPickupDate(e.target.value)}
                                         onClick={(e) => (e.target as any).showPicker?.()}
                                     />
+                                </div>
+                            </div>
+
+                            <div className={styles.section}>
+                                <label className={styles.sectionLabel}>Loading Confirmation</label>
+                                <div className={styles.dateGrid}>
+                                    <div className={styles.dateField}>
+                                        <label htmlFor="loading-start">Start</label>
+                                        <input
+                                            id="loading-start"
+                                            type="date"
+                                            value={loadingStart}
+                                            onChange={e => setLoadingStart(e.target.value)}
+                                            onClick={(e) => (e.target as any).showPicker?.()}
+                                            placeholder="Select start date"
+                                            title="Loading start date"
+                                        />
+                                    </div>
+                                    <div className={styles.dateField}>
+                                        <label htmlFor="loading-finish">Finish</label>
+                                        <input
+                                            id="loading-finish"
+                                            type="date"
+                                            value={loadingFinish}
+                                            onChange={e => setLoadingFinish(e.target.value)}
+                                            onClick={(e) => (e.target as any).showPicker?.()}
+                                            placeholder="Select finish date"
+                                            title="Loading finish date"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 

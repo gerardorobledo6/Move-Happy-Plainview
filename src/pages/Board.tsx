@@ -152,22 +152,15 @@ const Board = () => {
 
     if (!currentLane || !targetCard) return;
 
-    const title = currentLane.title.toLowerCase();
-    let nextLaneKeyword = '';
-    if (title.includes('welcome')) nextLaneKeyword = 'prep';
-    else if (title.includes('prep')) nextLaneKeyword = 'premove';
-    else if (title.includes('premove')) nextLaneKeyword = 'pu live';
-    else if (title.includes('pu live') || title.includes('pulive')) nextLaneKeyword = 'done';
-
-    let targetLane = lanes.find(l => nextLaneKeyword && l.title.toLowerCase().includes(nextLaneKeyword));
+    const sortedLanes = [...lanes].sort((a, b) => a.order - b.order);
+    const currentIndex = sortedLanes.findIndex(l => l.id === currentLane!.id);
     
-    // Fallback for 'done' if named differently
-    if (nextLaneKeyword === 'done' && !targetLane) {
-        targetLane = lanes.find(l => l.title.toLowerCase().includes('finished') || l.title.toLowerCase().includes('archive'));
+    let targetLane: Lane | undefined;
+    if (currentIndex !== -1 && currentIndex < sortedLanes.length - 1) {
+        targetLane = sortedLanes[currentIndex + 1];
     }
 
-    // If there is a target lane, move it. If not but it's the final stage, we might just leave it or mark as done.
-    if (!targetLane && nextLaneKeyword !== 'done') {
+    if (!targetLane) {
         console.error("Next lane not found for progression");
         return;
     }

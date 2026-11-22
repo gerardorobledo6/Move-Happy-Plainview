@@ -35,6 +35,12 @@ const KanbanCard: React.FC<Props> = ({ card, isOverlay, onClick }) => {
         'Urgent': '#7f1d1d' // dark red
     }[card.priority] || '#9ca3af';
 
+    // Match CardDetailModal's Pickup Date conversion exactly so both views
+    // display the same calendar day, even when the API returns a timezone offset.
+    const pickupDateValue = card.pickupDate
+        ? new Date(card.pickupDate).toISOString().split('T')[0]
+        : '';
+
     return (
         <div
             id={`card-${card.id}`}
@@ -63,10 +69,10 @@ const KanbanCard: React.FC<Props> = ({ card, isOverlay, onClick }) => {
                 <div className={styles.title}>{card.title}</div>
 
                 <div className={styles.footer}>
-                    {card.plannedFinish && (
+                    {pickupDateValue && (
                         <div className={styles.date}>
                             <Calendar size={12} />
-                            <span>{format(new Date(card.plannedFinish), 'MMM d')}</span>
+                            <span>{format(new Date(pickupDateValue + 'T00:00:00'), 'MMM d')}</span>
                         </div>
                     )}
                     {card.description && <AlignLeft size={12} color="#9ca3af" />}
