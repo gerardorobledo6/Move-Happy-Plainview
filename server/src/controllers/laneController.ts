@@ -173,9 +173,25 @@ export const moveLane = async (req: Request, res: Response): Promise<void> => {
             })
         ]);
 
-        const lanes = await prisma.lane.findMany({
-            orderBy: { order: 'asc' }
-        });
+        
+const lanes = await prisma.lane.findMany({
+    orderBy: { order: 'asc' },
+    include: {
+        cards: {
+            orderBy: { priority: 'desc' },
+            include: {
+                tags: true,
+                assignedUsers: true,
+                followUp: true,
+                comments: {
+                    include: { user: true },
+                    orderBy: { createdAt: 'desc' }
+                }
+            }
+        }
+    }
+});
+
 
         res.json(lanes);
     } catch (error) {
