@@ -77,17 +77,42 @@ const TasksView: React.FC<TasksViewProps> = ({ onBack }) => {
         });
     }, []);
 
-    const handleStatusChange = (taskId: string, newStatus: string) => {
-        const updatedTasks = tasks.map(t => 
-            t.id === taskId ? { ...t, status: newStatus } : t
-        );
-        setTasks(updatedTasks);
+    
+const handleStatusChange = async (taskId: string, newStatus: string) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    const updatedTasks = tasks.map(t =>
+        t.id === taskId ? { ...t, status: newStatus } : t
+    );
+
+    setTasks(updatedTasks);
+
+    try {
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    } catch (e) {
+        console.error("Failed to save tasks", e);
+    }
+
+    // Notify the task creator when the task is completed
+    if (
+        newStatus === "Done" &&
+        task.status !== "Done" &&
+        task.createdById &&
+        task.createdById !== user?.id
+    ) {
         try {
-            localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-        } catch (e) {
-            console.error("Failed to save tasks", e);
+            await client.post('/notifications', {
+                userId: task.createdById,
+                cardId: task.cardId,
+                cardTitle: `Task Completed: ${task.taskName} | Order Number: ${task.orderNumber || 'N/A'}`
+            });
+        } catch (error) {
+            console.error("Failed to notify task creator:", error);
         }
-    };
+    }
+};
+
 
     const activeTaskCounts = tasks.reduce((acc, t) => {
         if (t.status !== 'Done') {

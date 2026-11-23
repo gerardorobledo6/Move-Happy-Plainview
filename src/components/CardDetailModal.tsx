@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import client from '../api/client';
 import { Card, Comment, User } from '../types';
+import { useAuth } from '../context/AuthContext';
 import styles from './CardDetailModal.module.css';
 import { format } from 'date-fns';
 import { X, Save, Plus } from 'lucide-react';
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
+const { user } = useAuth();
     const [title, setTitle] = useState(card.title);
     const [orderNumber, setOrderNumber] = useState(card.orderNumber || '');
     const [description, setDescription] = useState(card.description || '');
@@ -135,6 +137,7 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
     cardId: card.id,
     orderNumber: orderNumber,
     assigneeId,
+    createdById: user?.id || null,
     taskName: newTaskName.trim(),
     priority: newTaskPriority,
     status: "Pending",

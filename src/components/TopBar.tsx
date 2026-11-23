@@ -135,29 +135,29 @@ const TopBar: React.FC<TopBarProps> = ({
                                             className={`${styles.notificationItem} ${!n.read ? styles.unread : ''}`}
                                             onClick={() => {
                                                 markAsRead(n.id);
-                                                if (n.cardTitle === 'New Task') {
-                                                    if (onShowTasks) onShowTasks();
-                                                } else {
-                                                    if (onOpenCard) onOpenCard(n.cardId);
-                                                }
+                                                if (n.cardTitle === 'New Task' || n.cardTitle.startsWith('Task Completed:')) {
+    if (onShowTasks) onShowTasks();
+} else {
+    if (onOpenCard) onOpenCard(n.cardId);
+}
                                                 setIsDropdownOpen(false);
                                             }}
                                         >
                                             <div className={styles.notifMessage}>
-                                                {n.cardTitle === 'New Task'
-                                                    ? `New task assigned by ${n.senderName}`
-                                                    : `You were assigned to: ${n.cardTitle}`}
-                                            </div>
-                                            <div className={styles.notifTime}>
-                                                {new Date(n.createdAt).toLocaleDateString()}
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
-                    )}
-                </div>
+    {n.cardTitle === 'New Task' ? (
+        `New task assigned by ${n.senderName}`
+    ) : n.cardTitle.startsWith('Task Completed:') ? (
+        <>
+            <strong>Task Completed</strong>
+            <br />
+            {n.senderName} completed the task "{n.cardTitle.replace('Task Completed: ', '').split(' | Order Number:')[0]}".
+            <br />
+            Order Number: {n.cardTitle.split(' | Order Number:')[1] || 'N/A'}
+        </>
+    ) : (
+        `You were assigned to: ${n.cardTitle}`
+    )}
+</div>
                 <button onClick={logout} className="btn btn-outline" style={{ fontSize: '0.875rem', padding: '0.4rem 0.8rem' }}>Logout</button>
             </div>
         </div>
