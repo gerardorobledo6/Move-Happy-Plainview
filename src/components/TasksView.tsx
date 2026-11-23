@@ -38,78 +38,70 @@ const TasksView: React.FC<TasksViewProps> = ({ onBack }) => {
         setSortConfig(null);
     }, [activeTab, filter]);
 
-    useEffect(() => {
-        client.get('/users').then(res => {
-            const fetchedUsers = res.data;
-            setUsers(fetchedUsers);
+    
+useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const usersRes = await client.get('/users');
+            setUsers(usersRes.data);
+        } catch (error) {
+            console.error("Failed to fetch users:", error);
+        }
 
-            try {
-                const stored = localStorage.getItem("tasks");
-                if (stored) {
-                    let parsedTasks = JSON.parse(stored);
-                    let needsMigration = false;
-                    
-                    parsedTasks = parsedTasks.map((t: any) => {
-                        if (t.assigneeName && !t.assigneeId) {
-                            needsMigration = true;
-                            const match = fetchedUsers.find((u: any) => u.name === t.assigneeName);
-                            const newTask = { ...t, assigneeId: match ? match.id : null };
-                            delete newTask.assigneeName;
-                            return newTask;
-                        }
-                        return t;
-                    });
+        try {
+            const tasksRes = await client.get('/tasks');
+            setTasks(tasksRes.data);
+        } catch (error) {
+            console.error("Failed to fetch tasks:", error);
+        }
+    };
 
-                    if (needsMigration) {
-                        localStorage.setItem("tasks", JSON.stringify(parsedTasks));
-                    }
-                    setTasks(parsedTasks);
-                }
-            } catch (e) {
-                console.error("Failed to parse tasks from localStorage", e);
-            }
-        }).catch(err => {
-            console.error("Failed to fetch users", err);
-            try {
-                const stored = localStorage.getItem("tasks");
-                if (stored) setTasks(JSON.parse(stored));
-            } catch (e) {}
-        });
-    }, []);
+    fetchData();
+}, []);
 
     
+
 const handleStatusChange = async (taskId: string, newStatus: string) => {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
 
-    const updatedTasks = tasks.map(t =>
-        t.id === taskId ? { ...t, status: newStatus } : t
-    );
-
-    setTasks(updatedTasks);
-
     try {
-        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-    } catch (e) {
-        console.error("Failed to save tasks", e);
-    }
+        const res = await client.put(`/tasks/${taskId}`, {
+            status: newStatus
+        });
 
-    // Notify the task creator when the task is completed
-    if (
-        newStatus === "Done" &&
-        task.status !== "Done" &&
-        task.createdById &&
-        task.createdById !== user?.id
-    ) {
-        try {
-            await client.post('/notifications', {
-                userId: task.createdById,
-                cardId: task.cardId,
-                cardTitle: `Task Completed: ${task.taskName} | Order Number: ${task.orderNumber || 'N/A'}`
-            });
-        } catch (error) {
-            console.error("Failed to notify task creator:", error);
+        const updatedTask = res.data;
+
+        setTasks(prevTasks =>
+            prevTasks.map(t =>
+                t.id === taskId ? updatedTask : t
+            )
+        );
+
+        // Notify the task creator when the task is completed
+        if (
+            newStatus === "Done" &&
+            task.status !== "Done" &&
+            task.createdById &&
+            task.createdById !== user?.id
+        ) {
+            try {
+                await client.post('/notifications', {
+                    userId: task.createdById,
+                    cardId: task.cardId,
+                    cardTitle: `Task Completed: ${task.taskName} | Order Number: ${task.orderNumber || 'N/A'}`
+                });
+            } catch (error) {
+                console.error("Failed to notify task creator:", error);
+            }
         }
+
+    } catch (error: any) {
+        console.error("Failed to update task status:", error);
+        alert(
+            error.response?.data?.error ||
+            'Could not update task status. Please try again.'
+        );
     }
 };
 

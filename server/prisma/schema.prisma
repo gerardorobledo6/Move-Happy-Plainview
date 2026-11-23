@@ -11,19 +11,22 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  passwordHash  String
-  name          String
-  avatarColor   String    @default("#3b82f6") // Hex color
-  role          String    @default("USER") // ADMIN, USER
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  avatarColor  String   @default("#3b82f6") // Hex color
+  role         String   @default("USER") // ADMIN, USER
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   assignedCards Card[]    @relation("AssignedCards")
   comments      Comment[]
 
-notifications Notification[] @relation("UserNotifications")
+  assignedTasks Task[] @relation("AssignedTasks")
+  createdTasks  Task[] @relation("CreatedTasks")
+
+  notifications Notification[] @relation("UserNotifications")
 }
 
 model Lane {
@@ -39,31 +42,31 @@ model Lane {
 model Card {
   id            String    @id @default(uuid())
   title         String
-  headerId      String?   // e.g. "CL-102"
+  headerId      String? // e.g. "CL-102"
   description   String?
   plannedStart  DateTime?
   plannedFinish DateTime?
   priority      String    @default("Normal") // Low, Normal, High, Urgent
   status        String    @default("Unblocked") // Blocked, Unblocked
   externalLink  String?
-  
+
   orderNumber   String?
   pickupDate    DateTime?
   loadingStart  DateTime? // Loading Confirmation - START
   loadingFinish DateTime? // Loading Confirmation - FINISH
   laneId        String
   lane          Lane      @relation(fields: [laneId], references: [id])
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  resolvedAt    DateTime?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  resolvedAt DateTime?
 
   tags          Tag[]
   comments      Comment[]
   assignedUsers User[]    @relation("AssignedCards")
   followUp      FollowUp?
+  tasks         Task[]
 }
-
 
 model FollowUp {
   id               String   @id @default(uuid())
@@ -76,10 +79,10 @@ model FollowUp {
 }
 
 model Tag {
-  id      String @id @default(uuid())
-  name    String @unique
-  color   String @default("#e5e7eb")
-  cards   Card[]
+  id    String @id @default(uuid())
+  name  String @unique
+  color String @default("#e5e7eb")
+  cards Card[]
 }
 
 model Comment {
@@ -93,12 +96,32 @@ model Comment {
 }
 
 model Notification {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
-  senderName  String
-  cardId      String
-  cardTitle   String
-  read        Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  senderName String
+  cardId     String
+  cardTitle  String
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model Task {
+  id     String @id @default(uuid())
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  orderNumber String?
+  assigneeId  String?
+  assignee    User?   @relation("AssignedTasks", fields: [assigneeId], references: [id])
+
+  createdById String?
+  createdBy   User?   @relation("CreatedTasks", fields: [createdById], references: [id])
+
+  taskName String
+  priority String @default("Normal")
+  status   String @default("Pending")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

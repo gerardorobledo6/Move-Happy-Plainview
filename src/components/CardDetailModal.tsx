@@ -156,41 +156,21 @@ const [movingLane, setMovingLane] = useState(false);
         }
     };
 
-    const handleCreateTask = async () => {
-        if (!newTaskName.trim()) return;
+    
+const handleCreateTask = async () => {
+    if (!newTaskName.trim()) return;
 
-        let tasks: any[] = [];
-        try {
-            const storedTasks = localStorage.getItem("tasks");
-            if (storedTasks) {
-                tasks = JSON.parse(storedTasks);
-            }
-        } catch (e) {
-            console.error("Failed to parse tasks from localStorage", e);
-        }
+    const assignee = allUsers.find(u => u.id === newTaskAssignee);
+    const assigneeId = assignee ? assignee.id : null;
 
-        const assignee = allUsers.find(u => u.id === newTaskAssignee);
-        const assigneeId = assignee ? assignee.id : null;
-
-        const newTask = {
-    id: Date.now().toString(),
-    cardId: card.id,
-    orderNumber: orderNumber,
-    assigneeId,
-    createdById: user?.id || null,
-    taskName: newTaskName.trim(),
-    priority: newTaskPriority,
-    status: "Pending",
-    createdAt: new Date().toISOString()
-};
-
-        tasks.push(newTask);
-
-        try {
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-        } catch (e) {
-            console.error("Failed to save tasks to localStorage", e);
-        }
+    try {
+        const res = await client.post('/tasks', {
+            cardId: card.id,
+            orderNumber: orderNumber,
+            assigneeId,
+            taskName: newTaskName.trim(),
+            priority: newTaskPriority
+        });
 
         if (assigneeId) {
             try {
@@ -208,8 +188,18 @@ const [movingLane, setMovingLane] = useState(false);
         setNewTaskAssignee('');
         setNewTaskPriority('Normal');
         setIsNewTaskModalOpen(false);
-    };
 
+    } catch (error: any) {
+        console.error("Failed to create task:", error);
+        alert(
+            error.response?.data?.error ||
+            'Could not create the task. Please try again.'
+        );
+    }
+};
+
+
+        
     // Keep refs fresh for global keyboard listener to avoid stale closures
     const stateRef = useRef({ isNewTaskModalOpen, loading, handleSaveDetails });
     useEffect(() => {
