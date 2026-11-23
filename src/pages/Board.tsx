@@ -155,18 +155,38 @@ useEffect(() => {
     setSelectedCard(card);
   };
 
-  const handleUpdateCard = (updatedCard?: Card) => {
+  
+const handleUpdateCard = (updatedCard?: Card) => {
     if (updatedCard) {
-      // In-memory update
-      setLanes(prevLanes => prevLanes.map(lane => ({
-        ...lane,
-        cards: lane.cards.map(c => c.id === updatedCard.id ? updatedCard : c)
-      })));
+        setLanes(prevLanes => {
+            const targetLaneExists = prevLanes.some(
+                lane => lane.id === updatedCard.laneId
+            );
+
+            if (!targetLaneExists) {
+                return prevLanes.map(lane => ({
+                    ...lane,
+                    cards: lane.cards.map(c =>
+                        c.id === updatedCard.id ? updatedCard : c
+                    )
+                }));
+            }
+
+            return prevLanes.map(lane => ({
+                ...lane,
+                cards: lane.id === updatedCard.laneId
+                    ? [
+                        ...lane.cards.filter(c => c.id !== updatedCard.id),
+                        updatedCard
+                    ]
+                    : lane.cards.filter(c => c.id !== updatedCard.id)
+            }));
+        });
     } else {
-      // Fallback to full refresh
-      fetchLanes();
+        fetchLanes();
     }
-  };
+};
+
 
   const handleOpenCardFromId = (cardId: string) => {
     // Search all lanes

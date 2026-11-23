@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import client from '../api/client';
-import { Card, Comment, User } from '../types';
+import { Card, Comment, User, Lane } from '../types';
 import { useAuth } from '../context/AuthContext';
 import styles from './CardDetailModal.module.css';
 import { format } from 'date-fns';
@@ -36,9 +36,11 @@ const { user } = useAuth();
         card.assignedUsers && card.assignedUsers.length > 0 ? card.assignedUsers[0].id : ''
     );
     const [allUsers, setAllUsers] = useState<User[]>([]);
+const [allLanes, setAllLanes] = useState<Lane[]>([]);
+const [selectedLaneId, setSelectedLaneId] = useState(card.laneId);
 
     const [loading, setLoading] = useState(false);
-
+const [movingLane, setMovingLane] = useState(false);
     // Fetch all users on mount
     useEffect(() => {
         const fetchUsers = async () => {
@@ -51,7 +53,18 @@ const { user } = useAuth();
         };
         fetchUsers();
     }, []);
-
+    // Fetch all lanes for the Lane dropdown
+    useEffect(() => {
+        const fetchLanes = async () => {
+            try {
+                const res = await client.get('/lanes');
+                setAllLanes(res.data);
+            } catch (err) {
+                console.error("Failed to fetch lanes", err);
+            }
+        };
+        fetchLanes();
+    }, []);
     // Auto-resize description logic
     const descriptionRef = useRef<HTMLTextAreaElement>(null);
     
@@ -113,6 +126,33 @@ const { user } = useAuth();
             });
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleLaneChange = async (laneId: string) => {
+        if (laneId === selectedLaneId) return;
+
+        try {
+            setMovingLane(true);
+
+            const res = await client.put(`/cards/${card.id}`, {
+                laneId
+            });
+
+            if (res.data) {
+                setSelectedLaneId(laneId);
+                onUpdate(res.data);
+            } else {
+                throw new Error('Server returned an empty response');
+            }
+        } catch (error: any) {
+            console.error('Failed to move card:', error);
+            alert(
+                error.response?.data?.error ||
+                'Could not move the card. Please try again.'
+            );
+        } finally {
+            setMovingLane(false);
         }
     };
 
@@ -332,15 +372,33 @@ const { user } = useAuth();
                                     </div>
                                 </div>
 
-                                <div className={styles.section}>
-                                    <label className={styles.sectionLabel}>Order Number</label>
-                                    <input
-                                        className={styles.orderNumberInput}
-                                        value={orderNumber}
-                                        onChange={e => setOrderNumber(e.target.value)}
-                                        placeholder="Order Number"
-                                    />
-                                </div>
+                                
+<div className={styles.section}>
+    <label className={styles.sectionLabel}>Order Number</label>
+    <input
+        className={styles.orderNumberInput}
+        value={orderNumber}
+        onChange={e => setOrderNumber(e.target.value)}
+        placeholder="Order Number"
+    />
+</div>
+
+<div className={styles.section}>
+    <label className={styles.sectionLabel}>Lane</label>
+    <select
+        className={styles.assigneeSelect}
+        value={selectedLaneId}
+        onChange={e => handleLaneChange(e.target.value)}
+        disabled={movingLane}
+    >
+        {allLanes.map(lane => (
+            <option key={lane.id} value={lane.id}>
+                {lane.title}
+            </option>
+        ))}
+    </select>
+</div>
+
                             </div>
 
                             <div className={styles.footer}>
