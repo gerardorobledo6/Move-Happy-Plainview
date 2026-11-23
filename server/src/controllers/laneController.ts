@@ -8,6 +8,7 @@ interface AuthRequest extends Request {
     userId?: string;
 }
 
+
 const checkAdmin = async (req: Request, res: Response): Promise<boolean> => {
     const userId = (req as AuthRequest).userId;
 
@@ -18,10 +19,10 @@ const checkAdmin = async (req: Request, res: Response): Promise<boolean> => {
 
     const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { role: true }
+        select: { email: true }
     });
 
-    if (!user || user.role !== 'ADMIN') {
+    if (!user || user.email?.toLowerCase() !== 'admin@movehappy.com') {
         res.status(403).json({ error: 'Administrator access required' });
         return false;
     }
