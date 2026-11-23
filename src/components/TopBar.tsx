@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { APP_NAME } from '../constants';
 import styles from './TopBar.module.css';
-import { Plus, UserPlus, FileSpreadsheet, LayoutDashboard, Sparkles, Bell, Users, ListFilter } from 'lucide-react';
+import { Plus, FileSpreadsheet, LayoutDashboard, Sparkles, Bell, Users, ListFilter } from 'lucide-react';
 import { useNotifications } from '../context/NotificationContext';
 
 import { Lane } from '../types';
@@ -20,11 +21,11 @@ interface TopBarProps {
     lanes: Lane[];
 }
 
-const TopBar: React.FC<TopBarProps> = ({ 
-    onNewClient, 
-    onExport, 
-    onManageUsers, 
-    onShowTasks, 
+const TopBar: React.FC<TopBarProps> = ({
+    onNewClient,
+    onExport,
+    onManageUsers,
+    onShowTasks,
     onShowPlanner,
     onShowDashboard,
     onShowFollowUps,
@@ -34,8 +35,8 @@ const TopBar: React.FC<TopBarProps> = ({
     const { user, logout, isAdmin } = useAuth();
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
-    const allCards = React.useMemo(() => 
-        lanes.flatMap(lane => lane.cards), 
+    const allCards = React.useMemo(
+        () => lanes.flatMap(lane => lane.cards),
         [lanes]
     );
 
@@ -48,9 +49,11 @@ const TopBar: React.FC<TopBarProps> = ({
                 setIsDropdownOpen(false);
             }
         };
+
         if (isDropdownOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }
+
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
@@ -60,30 +63,37 @@ const TopBar: React.FC<TopBarProps> = ({
         <div className={styles.topbar}>
             <div className={styles.left}>
                 <div className={styles.logo}>{APP_NAME}</div>
+
                 <button onClick={onShowPlanner} className={`${styles.actionBtn} btn btn-primary`} style={{ backgroundColor: '#f59e0b' }}>
                     <Sparkles size={16} /> My Day
                 </button>
+
                 <button onClick={onShowFollowUps} className={`${styles.actionBtn} btn btn-primary`} style={{ backgroundColor: '#02457A' }}>
                     <Bell size={16} /> Follow-Ups
                 </button>
+
                 <button onClick={onShowTasks} className={`${styles.actionBtn} btn btn-primary`}>
                     <ListFilter size={16} /> Tasks
                 </button>
+
                 {isAdmin && (
                     <button onClick={onShowDashboard} className={`${styles.actionBtn} btn btn-primary`} style={{ backgroundColor: '#8b5cf6' }}>
                         <LayoutDashboard size={16} /> Dashboard
                     </button>
                 )}
+
                 {isAdmin && (
                     <button onClick={onNewClient} className={`${styles.actionBtn} btn btn-primary`}>
                         <Plus size={16} /> New Client
                     </button>
                 )}
+
                 {isAdmin && (
                     <button onClick={onExport} className={`${styles.actionBtn} btn btn-primary`} style={{ marginLeft: '0.5rem', backgroundColor: '#10b981' }}>
                         <FileSpreadsheet size={16} /> Export to Excel
                     </button>
                 )}
+
                 {isAdmin && (
                     <button onClick={onManageUsers} className={`${styles.actionBtn} btn btn-primary`} style={{ marginLeft: '0.5rem', backgroundColor: '#6366f1' }}>
                         <Users size={16} /> Manage Users
@@ -93,25 +103,30 @@ const TopBar: React.FC<TopBarProps> = ({
 
             <div className={styles.right}>
                 {user && <ProductivityScore cards={allCards} userId={user.id} />}
+
                 <div className={styles.profileWrapper} ref={dropdownRef}>
-                    <button 
-                        className={styles.userProfileBtn} 
+                    <button
+                        className={styles.userProfileBtn}
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         type="button"
                     >
-                        <div 
-                            className={styles.avatar} 
-                            style={{ 
+                        <div
+                            className={styles.avatar}
+                            style={{
                                 backgroundColor: user?.avatarColor || '#3b82f6',
                                 transform: isDropdownOpen ? 'scale(0.95)' : 'scale(1)',
                                 position: 'relative'
                             }}
                         >
                             {user?.name?.charAt(0) || 'U'}
+
                             {unreadCount > 0 && (
-                                <div className={styles.badge}>{unreadCount > 9 ? '9+' : unreadCount}</div>
+                                <div className={styles.badge}>
+                                    {unreadCount > 9 ? '9+' : unreadCount}
+                                </div>
                             )}
                         </div>
+
                         <span>{user?.name}</span>
                     </button>
 
@@ -119,10 +134,14 @@ const TopBar: React.FC<TopBarProps> = ({
                         <div className={styles.dropdown} onClick={(e) => e.stopPropagation()}>
                             <div className={styles.dropdownHeader}>
                                 Notifications
+
                                 {unreadCount > 0 && (
-                                    <button onClick={markAllAsRead} className={styles.markAllBtn}>Mark all read</button>
+                                    <button onClick={markAllAsRead} className={styles.markAllBtn}>
+                                        Mark all read
+                                    </button>
                                 )}
                             </div>
+
                             <div className={styles.dropdownList}>
                                 {notifications.length === 0 ? (
                                     <div className={styles.dropdownEmpty}>
@@ -130,35 +149,54 @@ const TopBar: React.FC<TopBarProps> = ({
                                     </div>
                                 ) : (
                                     notifications.map(n => (
-                                        <div 
-                                            key={n.id} 
+                                        <div
+                                            key={n.id}
                                             className={`${styles.notificationItem} ${!n.read ? styles.unread : ''}`}
                                             onClick={() => {
                                                 markAsRead(n.id);
-                                                if (n.cardTitle === 'New Task' || n.cardTitle.startsWith('Task Completed:')) {
-    if (onShowTasks) onShowTasks();
-} else {
-    if (onOpenCard) onOpenCard(n.cardId);
-}
+
+                                                if (
+                                                    n.cardTitle === 'New Task' ||
+                                                    n.cardTitle.startsWith('Task Completed:')
+                                                ) {
+                                                    if (onShowTasks) onShowTasks();
+                                                } else {
+                                                    if (onOpenCard) onOpenCard(n.cardId);
+                                                }
+
                                                 setIsDropdownOpen(false);
                                             }}
                                         >
                                             <div className={styles.notifMessage}>
-    {n.cardTitle === 'New Task' ? (
-        `New task assigned by ${n.senderName}`
-    ) : n.cardTitle.startsWith('Task Completed:') ? (
-        <>
-            <strong>Task Completed</strong>
-            <br />
-            {n.senderName} completed the task "{n.cardTitle.replace('Task Completed: ', '').split(' | Order Number:')[0]}".
-            <br />
-            Order Number: {n.cardTitle.split(' | Order Number:')[1] || 'N/A'}
-        </>
-    ) : (
-        `You were assigned to: ${n.cardTitle}`
-    )}
-</div>
-                <button onClick={logout} className="btn btn-outline" style={{ fontSize: '0.875rem', padding: '0.4rem 0.8rem' }}>Logout</button>
+                                                {n.cardTitle === 'New Task' ? (
+                                                    `New task assigned by ${n.senderName}`
+                                                ) : n.cardTitle.startsWith('Task Completed:') ? (
+                                                    <>
+                                                        <strong>Task Completed</strong>
+                                                        <br />
+                                                        {n.senderName} completed the task "{n.cardTitle.replace('Task Completed: ', '').split(' | Order Number:')[0]}".
+                                                        <br />
+                                                        Order Number: {n.cardTitle.split(' | Order Number:')[1] || 'N/A'}
+                                                    </>
+                                                ) : (
+                                                    `You were assigned to: ${n.cardTitle}`
+                                                )}
+                                            </div>
+
+                                            <div className={styles.notifTime}>
+                                                {new Date(n.createdAt).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <button onClick={logout} className="btn btn-outline" style={{ fontSize: '0.875rem', padding: '0.4rem 0.8rem' }}>
+                    Logout
+                </button>
             </div>
         </div>
     );
