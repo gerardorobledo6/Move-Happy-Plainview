@@ -94,6 +94,8 @@ export const updateLane = async (req: Request, res: Response): Promise<void> => 
     try {
         if (!(await checkAdmin(req, res))) return;
 
+        const laneId = String(req.params.id);
+
         const title = typeof req.body.title === 'string'
             ? req.body.title.trim()
             : '';
@@ -104,7 +106,7 @@ export const updateLane = async (req: Request, res: Response): Promise<void> => 
         }
 
         const existingLane = await prisma.lane.findUnique({
-            where: { id: req.params.id }
+            where: { id: laneId }
         });
 
         if (!existingLane) {
@@ -113,7 +115,7 @@ export const updateLane = async (req: Request, res: Response): Promise<void> => 
         }
 
         const lane = await prisma.lane.update({
-            where: { id: req.params.id },
+            where: { id: laneId },
             data: { title }
         });
 
@@ -128,9 +130,10 @@ export const deleteLane = async (req: Request, res: Response): Promise<void> => 
     try {
         if (!(await checkAdmin(req, res))) return;
 
+        const laneId = String(req.params.id);
+
         const lane = await prisma.lane.findUnique({
-            where: { id: req.params.id },
-            include: { _count: { select: { cards: true } } }
+            where: { id: laneId }
         });
 
         if (!lane) {
@@ -138,7 +141,11 @@ export const deleteLane = async (req: Request, res: Response): Promise<void> => 
             return;
         }
 
-        if (lane._count.cards > 0) {
+        const cardCount = await prisma.card.count({
+            where: { laneId }
+        });
+
+        if (cardCount > 0) {
             res.status(400).json({
                 error: 'Move or remove all cards before deleting this column'
             });
@@ -146,7 +153,7 @@ export const deleteLane = async (req: Request, res: Response): Promise<void> => 
         }
 
         await prisma.lane.delete({
-            where: { id: req.params.id }
+            where: { id: laneId }
         });
 
         res.json({ message: 'Column deleted successfully' });
