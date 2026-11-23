@@ -286,10 +286,13 @@ const [activeCard, setActiveCard] = useState<Card | null>(null);
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
             autoScroll={{
-                threshold: 50,
-                acceleration: 10,
-                canScroll: (element) => element === boardRef.current
-            }}
+    threshold: {
+        x: 0.15,
+        y: 0.15
+    },
+    acceleration: 10,
+    canScroll: (element) => element === boardRef.current
+}}
         >
             <div 
                 ref={boardRef}
