@@ -40,3 +40,25 @@
 .board::-webkit-scrollbar-thumb:hover {
     background-color: #94a3b8;
 }
+.addColumnButton {
+    min-width: 190px;
+    width: 190px;
+    min-height: 80px;
+    align-self: flex-start;
+    padding: 1rem;
+    border: 2px dashed #97CADB;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.65);
+    color: #02457A;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.addColumnButton:hover {
+    background: white;
+    border-color: #018ABE;
+    color: #018ABE;
+    box-shadow: 0 2px 8px rgba(2, 69, 122, 0.12);
+}

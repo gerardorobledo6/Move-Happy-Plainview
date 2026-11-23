@@ -19,9 +19,22 @@ interface Props {
     onCardClick?: (card: Card) => void;
     lanes: Lane[];
     setLanes: React.Dispatch<React.SetStateAction<Lane[]>>;
+    isAdmin: boolean;
+    onAddColumn: () => void;
+    onRenameLane: (lane: Lane) => void;
+    onDeleteLane: (lane: Lane) => void;
 }
 
-const KanbanBoard: React.FC<Props> = ({ filters, onCardClick, lanes, setLanes }) => {
+const KanbanBoard: React.FC<Props> = ({
+    filters,
+    onCardClick,
+    lanes,
+    setLanes,
+    isAdmin,
+    onAddColumn,
+    onRenameLane,
+    onDeleteLane
+}) => {
     const [activeCard, setActiveCard] = useState<Card | null>(null);
     const boardRef = useRef<HTMLDivElement>(null);
     const [isDraggingBoard, setIsDraggingBoard] = useState(false);
@@ -282,8 +295,25 @@ const KanbanBoard: React.FC<Props> = ({ filters, onCardClick, lanes, setLanes })
                 onMouseDown={onMouseDown}
             >
                 {filteredLanes.map(lane => (
-                    <KanbanColumn key={lane.id} lane={lane} onCardClick={onCardClick} />
-                ))}
+    <KanbanColumn
+        key={lane.id}
+        lane={lane}
+        onCardClick={onCardClick}
+        isAdmin={isAdmin}
+        onRenameLane={onRenameLane}
+        onDeleteLane={onDeleteLane}
+    />
+))}
+
+{isAdmin && (
+    <button
+        className={styles.addColumnButton}
+        onClick={onAddColumn}
+        type="button"
+    >
+        + Add Column
+    </button>
+)}
             </div>
             <DragOverlay>
                 {activeCard ? <KanbanCard card={activeCard} isOverlay /> : null}

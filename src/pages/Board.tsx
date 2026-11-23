@@ -261,6 +261,67 @@ useEffect(() => {
     }
   };
 
+  const handleCreateLane = async () => {
+    if (!isAdmin) return;
+
+    const title = window.prompt('Enter the new column name:');
+    if (!title || !title.trim()) return;
+
+    try {
+      const res = await client.post('/lanes', {
+        title: title.trim()
+      });
+
+      setLanes(prev => [...prev, res.data].sort((a, b) => a.order - b.order));
+    } catch (error) {
+      console.error('Failed to create column:', error);
+      alert('Could not create the column. Please try again.');
+    }
+  };
+
+  const handleRenameLane = async (lane: Lane) => {
+    if (!isAdmin) return;
+
+    const title = window.prompt('Enter the new column name:', lane.title);
+    if (!title || !title.trim() || title.trim() === lane.title) return;
+
+    try {
+      const res = await client.put(`/lanes/${lane.id}`, {
+        title: title.trim()
+      });
+
+      setLanes(prev => prev.map(item =>
+        item.id === lane.id
+          ? { ...item, title: res.data.title }
+          : item
+      ));
+    } catch (error) {
+      console.error('Failed to rename column:', error);
+      alert('Could not rename the column. Please try again.');
+    }
+  };
+
+  const handleDeleteLane = async (lane: Lane) => {
+    if (!isAdmin) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${lane.title}"?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await client.delete(`/lanes/${lane.id}`);
+      setLanes(prev => prev.filter(item => item.id !== lane.id));
+    } catch (error: any) {
+      console.error('Failed to delete column:', error);
+      alert(
+        error.response?.data?.error ||
+        'Could not delete the column. Please try again.'
+      );
+    }
+  };
+
   const handleExport = () => {
     exportToExcel();
   };
@@ -292,12 +353,16 @@ useEffect(() => {
 
           <div className={styles.boardContainer}>
             <KanbanBoard
-              key={refreshKey}
-              filters={filters}
-              onCardClick={handleCardClick}
-              lanes={lanes}
-              setLanes={setLanes}
-            />
+  key={refreshKey}
+  filters={filters}
+  onCardClick={handleCardClick}
+  lanes={lanes}
+  setLanes={setLanes}
+  isAdmin={isAdmin}
+  onAddColumn={handleCreateLane}
+  onRenameLane={handleRenameLane}
+  onDeleteLane={handleDeleteLane}
+/>
             <KanbanInsightsPanel lanes={lanes} />
           </div>
         </div>

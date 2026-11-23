@@ -128,7 +128,30 @@
 .collapsed .count {
     display: none;
 }
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 
+.actionBtn {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.actionBtn:hover {
+    background: white;
+    color: #02457A;
+}
 .cardList {
     padding: 0.375rem;
     padding-left: 0.75rem; /* Space for idBar */

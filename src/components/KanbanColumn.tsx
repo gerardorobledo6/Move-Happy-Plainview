@@ -4,14 +4,22 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Lane, Card } from '../types';
 import KanbanCard from './KanbanCard';
 import styles from './KanbanColumn.module.css';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus, Pencil, Trash2 } from 'lucide-react';
 
 interface Props {
     lane: Lane;
     onCardClick?: (card: Card) => void;
+    isAdmin: boolean;
+    onRenameLane: (lane: Lane) => void;
+    onDeleteLane: (lane: Lane) => void;
 }
-
-const KanbanColumn: React.FC<Props> = ({ lane, onCardClick }) => {
+const KanbanColumn: React.FC<Props> = ({
+    lane,
+    onCardClick,
+    isAdmin,
+    onRenameLane,
+    onDeleteLane
+}) => {
     // Persistent state using localStorage
     const storageKey = `kanban-column-collapsed-${lane.id}`;
     const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -50,19 +58,48 @@ const KanbanColumn: React.FC<Props> = ({ lane, onCardClick }) => {
     return (
         <div className={`${styles.column} ${isCollapsed ? styles.collapsed : ''} ${isOver ? styles.isOver : ''}`}>
             <div className={styles.idBar} style={{ backgroundColor: color }} />
-            <div className={styles.header}>
-                <div className={styles.titleContainer}>
-                    <button 
-                        className={styles.toggleBtn} 
-                        onClick={toggleCollapse}
-                        title={isCollapsed ? "Expand" : "Collapse"}
-                    >
-                        {isCollapsed ? <Plus size={14} /> : <Minus size={14} />}
-                    </button>
-                    <span>{lane.title}</span>
-                </div>
-                <span className={styles.count}>{lane.cards.length}</span>
-            </div>
+            
+<div className={styles.header}>
+    <div className={styles.titleContainer}>
+        <button 
+            className={styles.toggleBtn} 
+            onClick={toggleCollapse}
+            title={isCollapsed ? "Expand" : "Collapse"}
+            type="button"
+        >
+            {isCollapsed ? <Plus size={14} /> : <Minus size={14} />}
+        </button>
+
+        <span>{lane.title}</span>
+    </div>
+
+    <div className={styles.headerActions}>
+        <span className={styles.count}>{lane.cards.length}</span>
+
+        {isAdmin && (
+            <>
+                <button
+                    type="button"
+                    className={styles.actionBtn}
+                    title="Rename column"
+                    onClick={() => onRenameLane(lane)}
+                >
+                    <Pencil size={13} />
+                </button>
+
+                <button
+                    type="button"
+                    className={styles.actionBtn}
+                    title="Delete column"
+                    onClick={() => onDeleteLane(lane)}
+                >
+                    <Trash2 size={13} />
+                </button>
+            </>
+        )}
+    </div>
+</div>
+
             <div ref={setNodeRef} className={styles.cardList}>
                 <SortableContext items={lane.cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
                     {lane.cards.map(card => (
