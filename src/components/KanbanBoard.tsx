@@ -23,6 +23,7 @@ interface Props {
     onAddColumn: () => void;
     onRenameLane: (lane: Lane) => void;
     onDeleteLane: (lane: Lane) => void;
+onMoveLane: (lane: Lane, direction: 'left' | 'right') => void;
 }
 
 const KanbanBoard: React.FC<Props> = ({
@@ -33,9 +34,10 @@ const KanbanBoard: React.FC<Props> = ({
     isAdmin,
     onAddColumn,
     onRenameLane,
-    onDeleteLane
-}) => {
-    const [activeCard, setActiveCard] = useState<Card | null>(null);
+    onDeleteLane,
+    onMoveLane
+}) => {    
+const [activeCard, setActiveCard] = useState<Card | null>(null);
     const boardRef = useRef<HTMLDivElement>(null);
     const [isDraggingBoard, setIsDraggingBoard] = useState(false);
     const dragInfo = useRef({ isDown: false, startX: 0, startY: 0, scrollLeft: 0, scrollTop: 0 });
@@ -302,6 +304,7 @@ const KanbanBoard: React.FC<Props> = ({
         isAdmin={isAdmin}
         onRenameLane={onRenameLane}
         onDeleteLane={onDeleteLane}
+onMoveLane={onMoveLane}
     />
 ))}
 

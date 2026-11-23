@@ -127,6 +127,63 @@ export const updateLane = async (req: Request, res: Response): Promise<void> => 
     }
 };
 
+export const moveLane = async (req: Request, res: Response): Promise<void> => {
+    try {
+        if (!(await checkAdmin(req, res))) return;
+
+        const laneId = String(req.params.id);
+        const direction = req.body.direction;
+
+        if (direction !== 'left' && direction !== 'right') {
+            res.status(400).json({ error: 'Invalid movement direction' });
+            return;
+        }
+
+        const currentLane = await prisma.lane.findUnique({
+            where: { id: laneId }
+        });
+
+        if (!currentLane) {
+            res.status(404).json({ error: 'Column not found' });
+            return;
+        }
+
+        const neighborLane = await prisma.lane.findFirst({
+            where: direction === 'left'
+                ? { order: { lt: currentLane.order } }
+                : { order: { gt: currentLane.order } },
+            orderBy: {
+                order: direction === 'left' ? 'desc' : 'asc'
+            }
+        });
+
+        if (!neighborLane) {
+            res.status(400).json({ error: 'Column cannot move further' });
+            return;
+        }
+
+        await prisma.$transaction([
+            prisma.lane.update({
+                where: { id: currentLane.id },
+                data: { order: neighborLane.order }
+            }),
+            prisma.lane.update({
+                where: { id: neighborLane.id },
+                data: { order: currentLane.order }
+            })
+        ]);
+
+        const lanes = await prisma.lane.findMany({
+            orderBy: { order: 'asc' }
+        });
+
+        res.json(lanes);
+    } catch (error) {
+        console.error('Failed to move lane:', error);
+        res.status(500).json({ error: 'Failed to move column' });
+    }
+};
+
 export const deleteLane = async (req: Request, res: Response): Promise<void> => {
     try {
         if (!(await checkAdmin(req, res))) return;

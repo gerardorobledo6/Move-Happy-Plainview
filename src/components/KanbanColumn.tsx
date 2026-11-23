@@ -4,7 +4,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Lane, Card } from '../types';
 import KanbanCard from './KanbanCard';
 import styles from './KanbanColumn.module.css';
-import { Plus, Minus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Minus, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Props {
     lane: Lane;
@@ -12,13 +12,15 @@ interface Props {
     isAdmin: boolean;
     onRenameLane: (lane: Lane) => void;
     onDeleteLane: (lane: Lane) => void;
+    onMoveLane: (lane: Lane, direction: 'left' | 'right') => void;
 }
 const KanbanColumn: React.FC<Props> = ({
     lane,
     onCardClick,
     isAdmin,
     onRenameLane,
-    onDeleteLane
+    onDeleteLane,
+    onMoveLane
 }) => {
     // Persistent state using localStorage
     const storageKey = `kanban-column-collapsed-${lane.id}`;
@@ -75,7 +77,27 @@ const KanbanColumn: React.FC<Props> = ({
 
     <div className={styles.headerActions}>
         <span className={styles.count}>{lane.cards.length}</span>
+{isAdmin && (
+    <>
+        <button
+            type="button"
+            className={styles.actionBtn}
+            title="Move column left"
+            onClick={() => onMoveLane(lane, 'left')}
+        >
+            <ChevronLeft size={15} />
+        </button>
 
+        <button
+            type="button"
+            className={styles.actionBtn}
+            title="Move column right"
+            onClick={() => onMoveLane(lane, 'right')}
+        >
+            <ChevronRight size={15} />
+        </button>
+    </>
+)}
         {isAdmin && (
             <>
                 <button

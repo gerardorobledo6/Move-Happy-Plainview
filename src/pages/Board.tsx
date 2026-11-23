@@ -19,6 +19,7 @@ import styles from './Board.module.css';
 
 const Board = () => {
   const { user, isAdmin } = useAuth();
+const canManageColumns = user?.email?.toLowerCase() === 'admin@movehappy.com';
   const [view, setView] = useState('dashboard');
   const [showSidebar, setShowSidebar] = useState(true);
   const [showNewClientModal, setShowNewClientModal] = useState(false);
@@ -322,6 +323,25 @@ useEffect(() => {
     }
   };
 
+  const handleMoveLane = async (lane: Lane, direction: 'left' | 'right') => {
+    if (!canManageColumns) return;
+
+    try {
+      const res = await client.patch(`/lanes/${lane.id}/move`, {
+        direction
+      });
+
+      setLanes(res.data);
+    } catch (error: any) {
+      console.error('Failed to move column:', error);
+      alert(
+        error.response?.data?.error ||
+        'Could not move the column. Please try again.'
+      );
+    }
+  };
+
+
   const handleExport = () => {
     exportToExcel();
   };
@@ -358,10 +378,11 @@ useEffect(() => {
   onCardClick={handleCardClick}
   lanes={lanes}
   setLanes={setLanes}
-  isAdmin={isAdmin}
+  isAdmin={canManageColumns}
   onAddColumn={handleCreateLane}
   onRenameLane={handleRenameLane}
   onDeleteLane={handleDeleteLane}
+onMoveLane={handleMoveLane}
 />
             <KanbanInsightsPanel lanes={lanes} />
           </div>
