@@ -391,6 +391,11 @@ const TasksView: React.FC<TasksViewProps> = ({ onBack }) => {
                                             Date Created {renderSortIcon('createdAt')}
                                         </div>
                                     </th>
+<th>
+    <div className={`${styles.sortableHeader} ${sortConfig?.key === 'orderNumber' ? styles.activeSort : ''}`} onClick={() => handleSort('orderNumber')}>
+        Order Number {renderSortIcon('orderNumber')}
+    </div>
+</th>
                                     <th>
                                         <div className={`${styles.sortableHeader} ${sortConfig?.key === 'assignee' ? styles.activeSort : ''}`} onClick={() => handleSort('assignee')}>
                                             Assignee {renderSortIcon('assignee')}
@@ -417,6 +422,7 @@ const TasksView: React.FC<TasksViewProps> = ({ onBack }) => {
                                 {currentTasks.length > 0 ? currentTasks.map(task => (
                                     <tr key={task.id}>
                                         <td>{new Date(task.createdAt).toLocaleDateString()}</td>
+<td>{task.orderNumber || '—'}</td>
                                         <td>
                                             <div className={styles.assignee}>
                                                 <div className={styles.avatar}>
@@ -452,7 +458,7 @@ const TasksView: React.FC<TasksViewProps> = ({ onBack }) => {
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan={5} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+                                        <td colSpan={6} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
                                             No tasks found.
                                         </td>
                                     </tr>

@@ -131,14 +131,15 @@ const CardDetailModal: React.FC<Props> = ({ card, onClose, onUpdate }) => {
         const assigneeId = assignee ? assignee.id : null;
 
         const newTask = {
-            id: Date.now().toString(),
-            cardId: card.id,
-            assigneeId,
-            taskName: newTaskName.trim(),
-            priority: newTaskPriority,
-            status: "Pending",
-            createdAt: new Date().toISOString()
-        };
+    id: Date.now().toString(),
+    cardId: card.id,
+    orderNumber: orderNumber,
+    assigneeId,
+    taskName: newTaskName.trim(),
+    priority: newTaskPriority,
+    status: "Pending",
+    createdAt: new Date().toISOString()
+};
 
         tasks.push(newTask);
 
