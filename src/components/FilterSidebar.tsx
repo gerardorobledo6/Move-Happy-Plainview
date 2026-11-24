@@ -1,7 +1,8 @@
 import styles from './FilterSidebar.module.css';
 import { User, Lane } from '../types';
+import client from '../api/client';
 
-import { ChevronRight, Search, PanelLeft, Users, Calendar, Flag } from 'lucide-react';
+import { ChevronRight, Search, PanelLeft, Users, Calendar, Flag, ClipboardList } from 'lucide-react';
 import { useState } from 'react';
 import PriorityChart from './PriorityChart';
 
@@ -28,6 +29,14 @@ const FilterSidebar: React.FC<Props> = ({ isOpen, filters, setFilters, users, la
     const [isPlannedStartExpanded, setIsPlannedStartExpanded] = useState(false);
     const [isPlannedFinishExpanded, setIsPlannedFinishExpanded] = useState(false);
 
+    // New Task form
+    const [isNewTaskExpanded, setIsNewTaskExpanded] = useState(false);
+    const [newTaskName, setNewTaskName] = useState('');
+    const [newTaskAssignee, setNewTaskAssignee] = useState('');
+    const [newTaskPriority, setNewTaskPriority] = useState('Normal');
+    const [selectedOrderNumber, setSelectedOrderNumber] = useState('');
+    const [isCreatingTask, setIsCreatingTask] = useState(false);
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilters(prev => ({ ...prev, search: e.target.value }));
     };
@@ -48,6 +57,73 @@ const FilterSidebar: React.FC<Props> = ({ isOpen, filters, setFilters, users, la
                 ? prev.priorities.filter(p => p !== priority)
                 : [...prev.priorities, priority]
         }));
+    };
+
+    const handleCreateTask = async () => {
+        if (!newTaskName.trim()) {
+            alert('Please enter a Task Name.');
+            return;
+        }
+
+        if (!selectedOrderNumber) {
+            alert('Please select an Order Number.');
+            return;
+        }
+
+                const normalizedOrderNumber = selectedOrderNumber.trim().toLowerCase();
+
+        const selectedCard = lanes
+            .flatMap(lane => lane.cards)
+            .find(card =>
+                String(card.orderNumber || '').trim().toLowerCase() === normalizedOrderNumber
+            );
+
+        if (!selectedCard) {
+            alert('Could not find the client associated with this Order Number.');
+            return;
+        }
+
+        const assignee = users.find(u => u.id === newTaskAssignee);
+        const assigneeId = assignee ? assignee.id : null;
+
+        try {
+            setIsCreatingTask(true);
+
+            await client.post('/tasks', {
+                cardId: selectedCard.id,
+                orderNumber: selectedOrderNumber,
+                assigneeId,
+                taskName: newTaskName.trim(),
+                priority: newTaskPriority
+            });
+
+            if (assigneeId) {
+                try {
+                    await client.post('/notifications', {
+                        userId: assigneeId,
+                        cardId: selectedCard.id,
+                        cardTitle: 'New Task'
+                    });
+                } catch (error) {
+                    console.error('Failed to create task notification:', error);
+                }
+            }
+
+            setNewTaskName('');
+            setNewTaskAssignee('');
+            setNewTaskPriority('Normal');
+            setSelectedOrderNumber('');
+            alert('Task created successfully!');
+
+        } catch (error: any) {
+            console.error('Failed to create task:', error);
+            alert(
+                error.response?.data?.error ||
+                'Could not create the task. Please try again.'
+            );
+        } finally {
+            setIsCreatingTask(false);
+        }
     };
 
     return (
@@ -73,7 +149,7 @@ const FilterSidebar: React.FC<Props> = ({ isOpen, filters, setFilters, users, la
 
             {isOpen && (
                 <>
-                    <div className={styles.filterCard}>
+                                        <div className={styles.filterCard}>
                         <div className={styles.filterHeader} onClick={() => setIsUsersExpanded(!isUsersExpanded)}>
                             <div>
                                 <div className={styles.filterTitle}>
@@ -103,6 +179,109 @@ const FilterSidebar: React.FC<Props> = ({ isOpen, filters, setFilters, users, la
                                             {u.name}
                                         </label>
                                     ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* NEW TASK */}
+                    <div className={styles.filterCard}>
+                        <div
+                            className={styles.filterHeader}
+                            onClick={() => setIsNewTaskExpanded(!isNewTaskExpanded)}
+                        >
+                            <div>
+                                <div className={styles.filterTitle}>
+                                    <ClipboardList size={14} /> New Task
+                                </div>
+                                {!isNewTaskExpanded && (
+                                    <div className={styles.filterPreview}>
+                                        Create a task
+                                    </div>
+                                )}
+                            </div>
+                            <ChevronRight
+                                size={16}
+                                style={{
+                                    transition: 'transform 0.2s',
+                                    transform: isNewTaskExpanded ? 'rotate(90deg)' : 'none',
+                                    color: '#94a3b8'
+                                }}
+                            />
+                        </div>
+
+                        {isNewTaskExpanded && (
+                            <div className={styles.filterContent}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '12px', marginBottom: '5px' }}>
+                                            Task Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={styles.input}
+                                            placeholder="What needs to be done?"
+                                            value={newTaskName}
+                                            onChange={(e) => setNewTaskName(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '12px', marginBottom: '5px' }}>
+                                            Assignee
+                                        </label>
+                                        <select
+                                            className={styles.input}
+                                            value={newTaskAssignee}
+                                            onChange={(e) => setNewTaskAssignee(e.target.value)}
+                                        >
+                                            <option value="">Select Assignee...</option>
+                                            {users.map(u => (
+                                                <option key={u.id} value={u.id}>
+                                                    {u.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '12px', marginBottom: '5px' }}>
+                                            Priority
+                                        </label>
+                                        <select
+                                            className={styles.input}
+                                            value={newTaskPriority}
+                                            onChange={(e) => setNewTaskPriority(e.target.value)}
+                                        >
+                                            <option value="Normal">Normal</option>
+                                            <option value="Critical">Critical</option>
+                                            <option value="Urgent">Urgent</option>
+                                        </select>
+                                    </div>
+
+                                                                        <div>
+                                        <label style={{ display: 'block', fontSize: '12px', marginBottom: '5px' }}>
+                                            Order Number
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={styles.input}
+                                            placeholder="Enter Order Number..."
+                                            value={selectedOrderNumber}
+                                            onChange={(e) => setSelectedOrderNumber(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={handleCreateTask}
+                                        disabled={isCreatingTask}
+                                        style={{ width: '100%' }}
+                                    >
+                                        {isCreatingTask ? 'Creating...' : 'Create Task'}
+                                    </button>
+
                                 </div>
                             </div>
                         )}
