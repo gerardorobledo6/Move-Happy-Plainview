@@ -66,18 +66,18 @@ const KanbanCard: React.FC<Props> = ({ card, isOverlay, onClick }) => {
             )}
 
             <div className={styles.content}>
-                <div className={styles.title}>{card.title}</div>
+    <div className={styles.title}>{card.title}</div>
 
-                <div className={styles.footer}>
-                    {pickupDateValue && (
-                        <div className={styles.date}>
-                            <Calendar size={12} />
-                            <span>{format(new Date(pickupDateValue + 'T00:00:00'), 'MMM d')}</span>
-                        </div>
-                    )}
-                    {card.description && <AlignLeft size={12} color="#9ca3af" />}
-                </div>
+    <div className={styles.footer}>
+        {card.plannedFinish && (
+            <div className={styles.date}>
+                <Calendar size={12} />
+                <span>{format(new Date(card.plannedFinish), 'MMM d')}</span>
             </div>
+        )}
+        {card.description && <AlignLeft size={12} color="#9ca3af" />}
+    </div>
+</div>
             {card.priority && (
                 <div className={`${styles.priorityBadge} ${styles[card.priority.toLowerCase()] || styles.normal}`}>
                     {card.priority}
