@@ -233,6 +233,7 @@ const [activeCard, setActiveCard] = useState<Card | null>(null);
     }, [isDraggingBoard]);
     // ----------------------------------------------------
 
+    
     const filteredLanes = lanes.map(lane => ({
         ...lane,
         cards: lane.cards.map(card => ({
@@ -241,7 +242,7 @@ const [activeCard, setActiveCard] = useState<Card | null>(null);
         })).filter(card => {
             if (filters?.search) {
                 const term = filters.search.toLowerCase().trim();
-                
+
                 const searchFields = [
                     card.title,
                     card.headerId,
@@ -255,26 +256,40 @@ const [activeCard, setActiveCard] = useState<Card | null>(null);
                     ...(card.tags?.map(t => t.name) || [])
                 ];
 
-                const matches = searchFields.some(field => 
+                const matches = searchFields.some(field =>
                     field && field.toString().toLowerCase().includes(term)
                 );
-                
+
                 if (!matches) return false;
             }
+
             if (filters?.userIds && filters.userIds.length > 0) {
                 const hasUser = card.assignedUsers.some(u => filters.userIds.includes(u.id));
                 if (!hasUser) return false;
             }
+
             if (filters?.priorities && filters.priorities.length > 0) {
                 if (!filters.priorities.includes(card.priority)) return false;
             }
+
             if (filters?.plannedStart) {
                 if (!card.plannedStart || !card.plannedStart.startsWith(filters.plannedStart)) return false;
             }
+
             if (filters?.plannedFinish) {
                 if (!card.plannedFinish || !card.plannedFinish.startsWith(filters.plannedFinish)) return false;
             }
+
             return true;
+        }).sort((a, b) => {
+            // Cards without Planned Finish go to the bottom
+            if (!a.plannedFinish && !b.plannedFinish) return 0;
+            if (!a.plannedFinish) return 1;
+            if (!b.plannedFinish) return -1;
+
+            // Sort from the earliest Planned Finish to the latest
+            return new Date(a.plannedFinish).getTime() -
+                   new Date(b.plannedFinish).getTime();
         })
     }));
 

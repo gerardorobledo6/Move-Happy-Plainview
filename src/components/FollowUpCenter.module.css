@@ -672,3 +672,85 @@
         transform: translateY(0);
     }
 }
+
+/* Follow-Up Tabs */
+.tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto 1rem auto;
+    border-bottom: 1px solid #97CADB;
+}
+
+.tabButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1.25rem;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    color: #475569;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tabButton:hover {
+    color: #018ABE;
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.activeTab {
+    color: #001B48;
+    border-bottom-color: #018ABE;
+}
+
+.tabCount {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #e0f2fe;
+    color: #02457A;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.activeTab .tabCount {
+    background: #018ABE;
+    color: white;
+}
+
+/* Complete Jobs Status */
+.completePill {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* Responsive Follow-Up Tabs */
+@media (max-width: 700px) {
+    .tabs {
+        gap: 0;
+    }
+
+    .tabButton {
+        flex: 1;
+        justify-content: center;
+        padding: 0.75rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .tabCount {
+        min-width: 20px;
+        height: 20px;
+    }
+}
