@@ -106,7 +106,26 @@ const handleStatusChange = async (taskId: string, newStatus: string) => {
     }
 };
 
+    const getDaysOpen = (createdAt: string) => {
+        if (!createdAt) return 0;
 
+        const createdDate = new Date(createdAt);
+        const today = new Date();
+
+        const createdDay = Date.UTC(
+            createdDate.getFullYear(),
+            createdDate.getMonth(),
+            createdDate.getDate()
+        );
+
+        const todayDay = Date.UTC(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate()
+        );
+
+        return Math.max(0, Math.floor((todayDay - createdDay) / 86400000));
+    };
     const activeTaskCounts = tasks.reduce((acc, t) => {
         if (t.status !== 'Done') {
             acc[t.assigneeId] = (acc[t.assigneeId] || 0) + 1;
@@ -422,6 +441,7 @@ const handleStatusChange = async (taskId: string, newStatus: string) => {
                 <>
                     <div className={styles.tableContainer}>
                         <table className={styles.table}>
+                            
                             <thead>
                                 <tr>
                                     <th>
@@ -429,11 +449,16 @@ const handleStatusChange = async (taskId: string, newStatus: string) => {
                                             Date Created {renderSortIcon('createdAt')}
                                         </div>
                                     </th>
-<th>
-    <div className={`${styles.sortableHeader} ${sortConfig?.key === 'orderNumber' ? styles.activeSort : ''}`} onClick={() => handleSort('orderNumber')}>
-        Order Number {renderSortIcon('orderNumber')}
-    </div>
-</th>
+                                    <th>
+                                        <div className={styles.sortableHeader}>
+                                            Days Open
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className={`${styles.sortableHeader} ${sortConfig?.key === 'orderNumber' ? styles.activeSort : ''}`} onClick={() => handleSort('orderNumber')}>
+                                            Order Number {renderSortIcon('orderNumber')}
+                                        </div>
+                                    </th>
                                     <th>
                                         <div className={`${styles.sortableHeader} ${sortConfig?.key === 'assignee' ? styles.activeSort : ''}`} onClick={() => handleSort('assignee')}>
                                             Assignee {renderSortIcon('assignee')}
@@ -456,10 +481,12 @@ const handleStatusChange = async (taskId: string, newStatus: string) => {
                                     </th>
                                 </tr>
                             </thead>
+
                             <tbody className={isAnimating ? styles.tableBodyFade : ''}>
                                 {currentTasks.length > 0 ? currentTasks.map(task => (
                                     <tr key={task.id}>
                                         <td>{new Date(task.createdAt).toLocaleDateString()}</td>
+                                        <td>{getDaysOpen(task.createdAt)}</td>
 <td>{task.orderNumber || '—'}</td>
                                         <td>
                                             <div className={styles.assignee}>
@@ -496,7 +523,7 @@ const handleStatusChange = async (taskId: string, newStatus: string) => {
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan={6} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+                                        <td colSpan={7} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
                                             No tasks found.
                                         </td>
                                     </tr>

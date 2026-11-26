@@ -1,7 +1,19 @@
+
 import * as XLSX from 'xlsx';
 import client from '../api/client';
 import { format } from 'date-fns';
 import { APP_NAME } from "./constants.ts";
+
+// Read date-only values without applying a timezone conversion
+const formatExcelDate = (value: string | Date | null | undefined) => {
+    if (!value) return '';
+
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value)) {
+        return value.slice(0, 10);
+    }
+
+    return format(new Date(value), 'yyyy-MM-dd');
+};
 
 export const exportToExcel = async () => {
     try {
@@ -18,9 +30,9 @@ export const exportToExcel = async () => {
                     'Assigned User': card.assignedUsers.map((u: any) => u.name).join(', '),
                     'Priority': card.priority,
                     'Status': card.status,
-                    'Pickup Date': card.pickupDate ? format(new Date(card.pickupDate), 'yyyy-MM-dd') : '',
-                    'Due Date': card.plannedFinish ? format(new Date(card.plannedFinish), 'yyyy-MM-dd') : '',
-                    'Created Date': card.createdAt ? format(new Date(card.createdAt), 'yyyy-MM-dd') : '',
+                    'Pickup Date': formatExcelDate(card.pickupDate),
+                    'Due Date': formatExcelDate(card.plannedFinish),
+                    'Created Date': formatExcelDate(card.createdAt),
                     'Notes': card.description?.replace(/<[^>]+>/g, '') || '',
                     'Lane': lane.title,
                     'Card ID': card.headerId,

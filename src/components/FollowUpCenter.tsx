@@ -23,6 +23,20 @@ interface FollowUpItem {
 
 const FOLLOW_UP_MARKER = '✅ Follow-up completed';
 
+const parseLocalDate = (value: string | Date): Date => {
+    if (value instanceof Date) {
+        return new Date(
+            value.getFullYear(),
+            value.getMonth(),
+            value.getDate()
+        );
+    }
+
+    const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+
+    return new Date(year, month - 1, day);
+};
+
 export default function FollowUpCenter({ lanes, onBack, onRefresh }: FollowUpCenterProps) {
     const [isLogging, setIsLogging] = useState<string | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
@@ -60,7 +74,7 @@ export default function FollowUpCenter({ lanes, onBack, onRefresh }: FollowUpCen
                 // even if they have a resolvedAt date.
                 if (card.resolvedAt && !isCompleteLane) return;
 
-                const pickupDate = new Date(card.pickupDate);
+                const pickupDate = parseLocalDate(card.pickupDate);
                 let lastFollowUpDate: Date | null = null;
 
                 if (card.followUp) {
