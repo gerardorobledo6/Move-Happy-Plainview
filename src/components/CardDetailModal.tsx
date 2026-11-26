@@ -339,10 +339,10 @@ const handleCreateTask = async () => {
                                 </div>
 
                                 <div className={styles.section}>
-                                    <label className={styles.sectionLabel}>Planned Dates</label>
+                                    <label className={styles.sectionLabel}>Assigned Date & Follow Up Date</label>
                                     <div className={styles.dateGrid}>
                                         <div className={styles.dateField}>
-                                            <label>Start</label>
+                                            <label>Assigned Date</label>
                                             <input
                                                 type="date"
                                                 value={plannedStart}
@@ -351,7 +351,7 @@ const handleCreateTask = async () => {
                                             />
                                         </div>
                                         <div className={styles.dateField}>
-                                            <label>Finish</label>
+                                            <label>Follow Up Date</label>
                                             <input
                                                 type="date"
                                                 value={plannedFinish}

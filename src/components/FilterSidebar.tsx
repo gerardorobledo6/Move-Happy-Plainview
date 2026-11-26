@@ -291,7 +291,7 @@ const FilterSidebar: React.FC<Props> = ({ isOpen, filters, setFilters, users, la
                         <div className={styles.filterHeader} onClick={() => setIsPlannedStartExpanded(!isPlannedStartExpanded)}>
                             <div>
                                 <div className={styles.filterTitle}>
-                                    <Calendar size={14} /> Planned Start
+                                    <Calendar size={14} /> Assigned Date
                                 </div>
                                 {!isPlannedStartExpanded && (
                                     <div className={styles.filterPreview}>
@@ -332,7 +332,7 @@ const FilterSidebar: React.FC<Props> = ({ isOpen, filters, setFilters, users, la
                         <div className={styles.filterHeader} onClick={() => setIsPlannedFinishExpanded(!isPlannedFinishExpanded)}>
                             <div>
                                 <div className={styles.filterTitle}>
-                                    <Calendar size={14} /> Planned Finish
+                                    <Calendar size={14} /> Follow Up Date
                                 </div>
                                 {!isPlannedFinishExpanded && (
                                     <div className={styles.filterPreview}>
