@@ -46,6 +46,7 @@ const [restoredForUser, setRestoredForUser] = useState<string | null>(null);
     fetchLanes();
   }, []);
 
+
 // Restore the user's board state after a page refresh
 useEffect(() => {
     if (!user?.id) return;
@@ -62,12 +63,16 @@ useEffect(() => {
                 setFilters(prev => ({
                     ...prev,
                     ...parsed.filters,
-                    userIds: Array.isArray(parsed.filters.userIds)
-                        ? parsed.filters.userIds
-                        : [],
+                    // Always select the currently logged-in user
+                    userIds: [user.id],
                     priorities: Array.isArray(parsed.filters.priorities)
                         ? parsed.filters.priorities
                         : [],
+                }));
+            } else {
+                setFilters(prev => ({
+                    ...prev,
+                    userIds: [user.id]
                 }));
             }
 
@@ -89,13 +94,24 @@ useEffect(() => {
             if (typeof parsed.showSidebar === 'boolean') {
                 setShowSidebar(parsed.showSidebar);
             }
+        } else {
+            setFilters(prev => ({
+                ...prev,
+                userIds: [user.id]
+            }));
         }
     } catch (error) {
         console.error('Failed to restore board state:', error);
+
+        setFilters(prev => ({
+            ...prev,
+            userIds: [user.id]
+        }));
     }
 
     setRestoredForUser(user.id);
 }, [user?.id, isAdmin]);
+
 
 // Save the user's board state whenever filters or view settings change
 useEffect(() => {

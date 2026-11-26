@@ -10,8 +10,9 @@ interface TasksViewProps {
 
 const TasksView: React.FC<TasksViewProps> = ({ onBack }) => {
     const { user } = useAuth();
-    const [activeTab, setActiveTab] = useState('Your Tasks');
+        const [activeTab, setActiveTab] = useState('Your Tasks');
     const [filter, setFilter] = useState('All');
+    const [assigneeFilter, setAssigneeFilter] = useState('All');
     const [tasks, setTasks] = useState<any[]>([]);
     const [users, setUsers] = useState<any[]>([]);
     // Pagination state
@@ -36,7 +37,7 @@ const TasksView: React.FC<TasksViewProps> = ({ onBack }) => {
         setCurrentPage(1);
         localStorage.setItem("tasks_current_page", "1");
         setSortConfig(null);
-    }, [activeTab, filter]);
+       }, [activeTab, filter, assigneeFilter]);
 
     
 useEffect(() => {
@@ -180,13 +181,18 @@ const handleStatusChange = async (taskId: string, newStatus: string) => {
         return baseScore + aiBoostScore;
     };
 
-    const displayedTasks = tasks.filter(task => {
+        const displayedTasks = tasks.filter(task => {
         // Apply Tab logic
         if (activeTab === 'Your Tasks' && task.assigneeId !== user?.id) {
             return false;
         }
-        
-        // Apply Dropdown Filter logic
+
+        // Apply Assignee Filter only in All Tasks
+        if (activeTab === 'All Tasks' && assigneeFilter !== 'All' && task.assigneeId !== assigneeFilter) {
+            return false;
+        }
+
+        // Apply Status Filter
         if (filter !== 'All' && task.status !== filter) {
             return false;
         }
@@ -329,12 +335,27 @@ const handleStatusChange = async (taskId: string, newStatus: string) => {
                     </button>
                 </div>
 
-                <div className={styles.filterSection}>
+                                <div className={styles.filterSection}>
                     <select value={filter} onChange={(e) => setFilter(e.target.value)} className={styles.filterSelect}>
                         <option value="All">All Statuses</option>
                         <option value="Pending">Pending</option>
                         <option value="Done">Done</option>
                     </select>
+
+                    {activeTab === 'All Tasks' && (
+                        <select
+                            value={assigneeFilter}
+                            onChange={(e) => setAssigneeFilter(e.target.value)}
+                            className={styles.filterSelect}
+                        >
+                            <option value="All">All Assignees</option>
+                            {users.map(u => (
+                                <option key={u.id} value={u.id}>
+                                    {u.name}
+                                </option>
+                            ))}
+                        </select>
+                    )}
                 </div>
             </div>
 
