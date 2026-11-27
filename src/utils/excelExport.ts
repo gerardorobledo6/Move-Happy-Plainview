@@ -9,10 +9,11 @@ const formatExcelDate = (value: string | Date | null | undefined) => {
     if (!value) return '';
 
     if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value)) {
-        return value.slice(0, 10);
+        const [year, month, day] = value.slice(0, 10).split('-');
+        return `${month}/${day}/${year}`;
     }
 
-    return format(new Date(value), 'yyyy-MM-dd');
+    return format(new Date(value), 'MM/dd/yyyy');
 };
 
 export const exportToExcel = async () => {
