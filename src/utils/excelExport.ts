@@ -1,19 +1,27 @@
 
 import * as XLSX from 'xlsx';
 import client from '../api/client';
-import { format } from 'date-fns';
 import { APP_NAME } from "./constants.ts";
 
-// Read date-only values without applying a timezone conversion
+// Convert dates to real Excel date serial numbers
 const formatExcelDate = (value: string | Date | null | undefined) => {
     if (!value) return '';
 
+    let year: number;
+    let month: number;
+    let day: number;
+
     if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value)) {
-        const [year, month, day] = value.slice(0, 10).split('-');
-        return `${month}/${day}/${year}`;
+        [year, month, day] = value.slice(0, 10).split('-').map(Number);
+    } else {
+        const date = new Date(value);
+        year = date.getFullYear();
+        month = date.getMonth() + 1;
+        day = date.getDate();
     }
 
-    return format(new Date(value), 'MM/dd/yyyy');
+    // Excel date serial number, preserving the calendar date
+    return Date.UTC(year, month - 1, day) / 86400000 + 25569;
 };
 
 export const exportToExcel = async () => {
@@ -43,6 +51,22 @@ export const exportToExcel = async () => {
 
         const worksheet = XLSX.utils.json_to_sheet(rows);
 
+        // Apply real Excel date formatting to date columns
+        const dateColumnIndexes = [5, 6, 7];
+
+        for (let row = 1; row <= rows.length; row++) {
+            dateColumnIndexes.forEach(col => {
+                const cellAddress = XLSX.utils.encode_cell({
+                    r: row,
+                    c: col
+                });
+
+                if (worksheet[cellAddress]) {
+                    worksheet[cellAddress].z = 'mm/dd/yyyy';
+                }
+            });
+        }
+
         // Auto-size columns
         if (rows.length > 0) {
             const colWidths = Object.keys(rows[0]).map(key => {
@@ -50,7 +74,7 @@ export const exportToExcel = async () => {
                     const val = row[key] ? String(row[key]) : '';
                     return Math.max(max, val.length);
                 }, key.length);
-                return { wch: maxLength + 2 };
+                return { wch: Math.max(maxLength + 2, 13) };
             });
             worksheet['!cols'] = colWidths;
         }
